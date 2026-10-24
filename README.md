@@ -6,9 +6,13 @@ CS2, VALORANT ve diğer rekabetçi oyunlar için Windows aracı: **oyuna özel r
 
 **[Tanıtım sayfası ve indirme](https://dogood-studio.github.io/game-color-guard/)** · [Son sürüm](https://github.com/DoGood-Studio/game-color-guard/releases/latest)
 
-![Renk profili önce ve sonra](docs/once-sonra.png)
+**Renk profili, gerçek oyun görüntülerinde** (sağ taraf: uygulamanın renk hesabıyla aydınlık 55, kontrast 55, gama 1,10, canlılık 85):
 
-*Örnek sahne kodla çizilmiştir; sağ taraf uygulamanın renk hesabının (Windows renk matrisi + gama rampası) aydınlık 55, kontrast 55, gama 1,10, canlılık 85 profiliyle uygulanmış hâlidir.*
+![CS2 önce ve sonra](docs/cs2-once-sonra.jpg)
+
+![VALORANT önce ve sonra](docs/valorant-once-sonra.jpg)
+
+![FPS Boost](docs/fps-boost-banner.jpg)
 
 ![Renk sayfası](docs/renk.png)
 
@@ -68,4 +72,4 @@ Game Color Guard is a Windows companion for CS2, VALORANT and other competitive 
 
 Geliştirici: **DoGood Studio**.
 
-Lisans: [PolyForm Noncommercial 1.0.0](LICENSE). Uygulamayı ücretsiz kullanabilir, değiştirebilir ve ticari olmayan amaçlarla paylaşabilirsiniz. **Satılamaz, ücretli dağıtılamaz ve ticari bir ürüne ya da hizmete dahil edilemez.** Paylaşırken lisans metnini ve "Required Notice" satırını koruyun. Bu proje Valve, Riot Games, NVIDIA veya prosettings.net ile bağlantılı değildir.
+Lisans: [PolyForm Noncommercial 1.0.0](LICENSE). Uygulamayı ücretsiz kullanabilir, değiştirebilir ve ticari olmayan amaçlarla paylaşabilirsiniz. **Satılamaz, ücretli dağıtılamaz ve ticari bir ürüne ya da hizmete dahil edilemez.** Paylaşırken lisans metnini ve "Required Notice" satırını koruyun. Bu proje Valve, Riot Games, NVIDIA veya prosettings.net ile bağlantılı değildir. Görseller: CS2 — Valve (Steam mağaza görseli), VALORANT — Riot Games. Game Color Guard isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.

@@ -1237,6 +1237,9 @@ public partial class MainWindow : Window
             case "scrolled":
                 MainScroll.ScrollToVerticalOffset(10000);
                 break;
+            case "boost-on":
+                ShowPage("boost");
+                break;
             case "boost":
             case "pro":
             case "system":

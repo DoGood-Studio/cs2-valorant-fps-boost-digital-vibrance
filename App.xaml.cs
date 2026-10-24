@@ -27,7 +27,12 @@ public partial class App : Application
         }
         if (args.Length >= 2 && args[0].Equals("--beforeafter", StringComparison.OrdinalIgnoreCase))
         {
-            Shutdown(BeforeAfter.Run(args[1]));
+            Shutdown(BeforeAfter.Run(args));
+            return;
+        }
+        if (args.Length >= 4 && args[0].Equals("--fpsbanner", StringComparison.OrdinalIgnoreCase))
+        {
+            Shutdown(BeforeAfter.Banner(args[1], args[2], args[3]));
             return;
         }
         if (args.Length >= 2 && args[0].Equals("--selftest", StringComparison.OrdinalIgnoreCase))

@@ -17,13 +17,13 @@
 <meta property="og:title" content="Game Color Guard — CS2 ve VALORANT için renk profili ve FPS Boost">
 <meta property="og:description" content="Oyuna özel Digital Vibrance ve renk profili, güvenli ve geri alınabilir FPS Boost, 200+ pro oyuncunun güncel ayarları. Ücretsiz.">
 <meta property="og:url" content="https://dogood-studio.github.io/game-color-guard/">
-<meta property="og:image" content="https://dogood-studio.github.io/game-color-guard/once-sonra.png">
+<meta property="og:image" content="https://dogood-studio.github.io/game-color-guard/cs2-once-sonra.jpg">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Game Color Guard — CS2 / VALORANT renk profili ve FPS Boost">
 <meta name="twitter:description" content="Digital Vibrance, güvenli FPS Boost ve pro ayarlar tek uygulamada. Ücretsiz.">
-<meta name="twitter:image" content="https://dogood-studio.github.io/game-color-guard/once-sonra.png">
+<meta name="twitter:image" content="https://dogood-studio.github.io/game-color-guard/cs2-once-sonra.jpg">
 
 <script type="application/ld+json">
 {
@@ -87,6 +87,10 @@
   .tag.l { left: 14px; background: rgba(20,22,27,.8); }
   .tag.r { right: 14px; background: rgba(255,122,26,.9); color: #1A0D04; }
   .note { color: var(--text3); font-size: 13px; margin-top: 10px; }
+  .tabs { display: inline-flex; gap: 4px; padding: 4px; margin-bottom: 14px; background: var(--bg1); border: 1px solid var(--stroke); border-radius: 12px; }
+  .tabs button { font: inherit; font-size: 14px; font-weight: 600; color: var(--text2); background: transparent; border: 0; border-radius: 9px; padding: 8px 16px; cursor: pointer; }
+  .tabs button.on { background: var(--surface2); color: var(--text); box-shadow: inset 0 0 0 1px var(--stroke2); }
+  .banner { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--stroke2); display: block; }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
   .card { background: linear-gradient(180deg, #15181E, #121419); border: 1px solid var(--stroke); border-radius: 16px; padding: 20px; }
@@ -135,15 +139,25 @@
 
     <section id="once-sonra">
       <h2>Önce / sonra</h2>
-      <p class="lead">Kaydırıcıyı sürükleyin. Sağ taraf, uygulamanın renk hesabının (Windows renk matrisi + gama rampası) örnek bir profille uygulanmış hâli: aydınlık 55, kontrast 55, gama 1,10, canlılık 85.</p>
+      <p class="lead">Gerçek oyun görüntüleri. Kaydırıcıyı sürükleyin: sağ taraf, uygulamanın renk hesabının (Windows renk matrisi + gama rampası) aydınlık 55, kontrast 55, gama 1,10, canlılık 85 profiliyle uygulanmış hâli. CS2'de gölgede bekleyen rakip, VALORANT'ta soluk renkler belirginleşir.</p>
+      <div class="tabs" role="tablist">
+        <button class="on" data-game="cs2" role="tab" aria-selected="true">Counter-Strike 2</button>
+        <button data-game="valorant" role="tab" aria-selected="false">VALORANT</button>
+      </div>
       <div class="compare" id="compare">
-        <img src="once.png" alt="Renk profili uygulanmadan önceki sahne" width="1280" height="720">
-        <img class="after" src="sonra.png" alt="Game Color Guard renk profili uygulandıktan sonraki sahne" width="1280" height="720">
+        <img id="beforeImg" src="cs2-once.jpg" alt="CS2: renk profili uygulanmadan önce, gölgeli geçit" width="1280" height="720">
+        <img id="afterImg" class="after" src="cs2-sonra.jpg" alt="CS2: Game Color Guard profiliyle gölgeler açılmış hâli" width="1280" height="720">
         <span class="tag l">Önce</span><span class="tag r">Sonra</span>
         <div class="handle"></div>
         <input type="range" min="0" max="100" value="50" aria-label="Önce ve sonra karşılaştırma kaydırıcısı">
       </div>
-      <p class="note">Örnek sahne kodla çizilmiştir; hiçbir oyunun görüntüsü kullanılmamıştır. Ekranınızda görünen sonuç monitöre ve profile göre değişir.</p>
+      <p class="note">Görüntüler: Counter-Strike 2 — Valve'ın Steam mağaza görseli; VALORANT — Riot Games'in Bind haritası görseli. "Sonra" tarafı uygulamanın ekrana uyguladığı hesapla üretilmiştir; ekranınızdaki sonuç monitöre ve profile göre değişir.</p>
+    </section>
+
+    <section id="fps-boost">
+      <h2>FPS Boost</h2>
+      <p class="lead">Bilgisayarınızı tanır, yalnızca güvenli ve tek tıkla geri alınabilen ayarları önerir.</p>
+      <img class="banner" src="fps-boost-banner.jpg" alt="Game Color Guard FPS Boost: sistemi tanır, Windows animasyonlarını ve Game Bar kaydını kapatır, oyunu yüksek önceliğe ve güçlü GPU'ya alır, hepsi tek tıkla geri alınır" width="1600" height="900" loading="lazy">
     </section>
 
     <section id="ozellikler">
@@ -214,7 +228,8 @@
   <footer>
     Geliştirici <strong>DoGood Studio</strong> · <a href="https://github.com/DoGood-Studio/game-color-guard/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a> ·
     Pro ayar verisi: <a href="https://prosettings.net" rel="nofollow">prosettings.net</a>.
-    Bu proje Valve, Riot Games, NVIDIA veya prosettings.net ile bağlantılı değildir.
+    Bu proje Valve, Riot Games, NVIDIA veya prosettings.net ile bağlantılı değildir. Counter-Strike 2 ve Steam, Valve Corporation'ın ticari markalarıdır.<br>
+    Game Color Guard isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
   </footer>
 </div>
 <script>
@@ -224,6 +239,17 @@
   const update = () => compare.style.setProperty('--pos', range.value + '%');
   range.addEventListener('input', update);
   update();
+  // CS2 / VALORANT sekmeleri: aynı kaydırıcıda görüntüleri değiştirir.
+  const sets = {
+    cs2: ['cs2-once.jpg', 'cs2-sonra.jpg', 'CS2: renk profili uygulanmadan önce', 'CS2: Game Color Guard profiliyle'],
+    valorant: ['valorant-once.jpg', 'valorant-sonra.jpg', 'VALORANT: renk profili uygulanmadan önce', 'VALORANT: Game Color Guard profiliyle']
+  };
+  document.querySelectorAll('.tabs button').forEach(button => button.addEventListener('click', () => {
+    const [before, after, beforeAlt, afterAlt] = sets[button.dataset.game];
+    const b = document.getElementById('beforeImg'), a = document.getElementById('afterImg');
+    b.src = before; b.alt = beforeAlt; a.src = after; a.alt = afterAlt;
+    document.querySelectorAll('.tabs button').forEach(x => { x.classList.toggle('on', x === button); x.setAttribute('aria-selected', x === button); });
+  }));
 </script>
 </body>
 </html>

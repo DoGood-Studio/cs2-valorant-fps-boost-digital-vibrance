@@ -7,3 +7,4 @@ publish/
 render-*.png
 *.png.error.txt
 eski-surum/
+.media/

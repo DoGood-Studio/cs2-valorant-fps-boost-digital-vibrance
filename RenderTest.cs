@@ -27,6 +27,13 @@ internal static class RenderTest
                 Hue = 0,
                 StartWithWindows = true
             };
+            // Tanıtım görseli: FPS Boost sayfası önerilen ayarlar açık hâliyle (yalnız görünüm; sisteme bir şey uygulanmaz).
+            if (state.Equals("boost-on", StringComparison.OrdinalIgnoreCase))
+                settings.Performance.Enabled.AddRange(new[]
+                {
+                    "visual-effects-off", "transparency-off", "mute-notifications", "accessibility-shortcuts-off", "power-mode-best",
+                    "process-priority-high", "windows-key-lock", "game-dvr-off", "game-mode-on", "windowed-optimizations", "gpu-preference"
+                });
             var window = new MainWindow(testMode: true, initialSettings: settings)
             {
                 ShowActivated = false,
