@@ -4,7 +4,7 @@ CS2, VALORANT ve diğer rekabetçi oyunlar için Windows aracı: **oyuna özel r
 
 *English summary below.*
 
-**[Tanıtım sayfası ve indirme](https://ekinkocakap93.github.io/game-color-guard/)** · [Son sürüm](https://github.com/ekinkocakap93/game-color-guard/releases/latest)
+**[Tanıtım sayfası ve indirme](https://dogood-studio.github.io/game-color-guard/)** · [Son sürüm](https://github.com/DoGood-Studio/game-color-guard/releases/latest)
 
 ![Renk profili önce ve sonra](docs/once-sonra.png)
 
