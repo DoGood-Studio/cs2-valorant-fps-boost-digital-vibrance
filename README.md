@@ -46,7 +46,7 @@ Arka planda RAM kullanmaması için gereksiz animasyon ve öğelerden arındır�
 
 Güvenlik taraması: v3.2 exe'si [VirusTotal'da 0/68](https://www.virustotal.com/gui/file/bb9d9c611562c7046f7c98d6d7e220017330859a73fc3d4e2aca7364f4280a1a/detection), hiçbir antivirüs zararlı bulmadı (24 Ekim 2026).
 
-Derleme kanıtı: Sürümler GitHub'ın sunucusunda derlenir ve derleme kanıtı (build provenance attestation) üretir. İndirdiğiniz exe'nin bu depodaki koddan üretildiğini kendiniz doğrulayabilirsiniz:
+Derleme kanıtı: Bundan sonraki sürümler GitHub'ın sunucusunda derlenip derleme kanıtıyla (build provenance attestation) yayınlanır; v3.2 elle derlendiği için kanıtı yoktur. Kanıtlı bir sürümde indirdiğiniz exe'nin bu depodaki koddan üretildiğini kendiniz doğrulayabilirsiniz:
 
 ```
 gh attestation verify GameColorGuard.exe --repo DoGood-Studio/game-color-guard
