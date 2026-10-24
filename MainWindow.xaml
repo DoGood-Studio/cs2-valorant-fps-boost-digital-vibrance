@@ -270,7 +270,26 @@
                     <!-- Başlangıç -->
                     <Border Grid.Row="4" Style="{StaticResource Card}" Padding="20,16">
                         <StackPanel>
-                            <TextBlock Text="AYARLAR" Style="{StaticResource Eyebrow}" Margin="0,0,0,12"/>
+                            <Grid Margin="0,0,0,12">
+                                <TextBlock Text="AYARLAR" Style="{StaticResource Eyebrow}" VerticalAlignment="Center"/>
+                                <!-- Dil seçici: kart yüksekliğini artırmamak için başlık satırında, liste açılır pencerede -->
+                                <Button x:Name="LanguageButton" Style="{StaticResource GhostButton}" Height="30" Padding="10,0"
+                                        HorizontalAlignment="Right" Margin="0,-9,-10,-9" Click="LanguageButton_Click"
+                                        ToolTip="Dil" AutomationProperties.Name="Dil">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE774;" Style="{StaticResource Icon}" FontSize="12"/>
+                                        <TextBlock x:Name="LanguageButtonText" Margin="7,0,0,0" FontSize="12" VerticalAlignment="Center"/>
+                                        <TextBlock Text="&#xE70D;" Style="{StaticResource Icon}" FontSize="9" Margin="6,1,0,0"/>
+                                    </StackPanel>
+                                </Button>
+                                <Popup x:Name="LanguagePopup" PlacementTarget="{Binding ElementName=LanguageButton}" Placement="Bottom"
+                                       StaysOpen="False" AllowsTransparency="True" PopupAnimation="None">
+                                    <Border Background="{StaticResource Surface2Brush}" BorderBrush="{StaticResource StrokeStrongBrush}"
+                                            BorderThickness="1" CornerRadius="10" Padding="4" Margin="0,4,0,0">
+                                        <StackPanel x:Name="LanguagePanel" MinWidth="150"/>
+                                    </Border>
+                                </Popup>
+                            </Grid>
                             <Grid>
                                 <StackPanel Margin="0,0,56,0">
                                     <TextBlock Text="Alt+Tab'da profili koru" FontWeight="SemiBold"/>
@@ -352,6 +371,13 @@
                                                        FontSize="11.5" Foreground="{StaticResource Text2Brush}"/>
                                         </StackPanel>
                                     </Border>
+                                    <Button Style="{StaticResource GhostButton}" Click="Recommended_Click" AutomationProperties.Name="Önerilen ayarlar"
+                                            ToolTip="Aydınlık 55 · Kontrast 55 · Gama 1,10 · Canlılık 85">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE734;" Style="{StaticResource Icon}" FontSize="12" Foreground="{StaticResource Ember400Brush}"/>
+                                            <TextBlock Text="Önerilen ayarlar" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                     <Button Style="{StaticResource GhostButton}" Click="Reset_Click" AutomationProperties.Name="Varsayılana dön">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="&#xE7A7;" Style="{StaticResource Icon}" FontSize="12"/>

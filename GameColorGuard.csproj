@@ -27,5 +27,6 @@
     <Resource Include="assets\app-logo.png" />
     <Resource Include="assets\app-icon.ico" />
     <EmbeddedResource Include="Data\ProSettings.json" LogicalName="ProSettings.json" />
+    <EmbeddedResource Include="Data\Lang\*.json" LogicalName="lang.%(Filename)" />
   </ItemGroup>
 </Project>

@@ -21,7 +21,7 @@ public partial class App : Application
 
         if (args.Length >= 2 && args[0].Equals("--render", StringComparison.OrdinalIgnoreCase))
         {
-            int code = RenderTest.Run(args[1], args.Length >= 3 ? args[2] : "idle");
+            int code = RenderTest.Run(args[1], args.Length >= 3 ? args[2] : "idle", args.Length >= 4 ? args[3] : null);
             Shutdown(code);
             return;
         }
@@ -35,6 +35,11 @@ public partial class App : Application
             Shutdown(BeforeAfter.Banner(args[1], args[2], args[3]));
             return;
         }
+        if (args.Length >= 2 && args[0].Equals("--langtest", StringComparison.OrdinalIgnoreCase))
+        {
+            Shutdown(SelfTest.RunLanguages(args[1]));
+            return;
+        }
         if (args.Length >= 2 && args[0].Equals("--selftest", StringComparison.OrdinalIgnoreCase))
         {
             Shutdown(SelfTest.Run(args[1]));
@@ -45,7 +50,8 @@ public partial class App : Application
         _ownsMutex = createdNew;
         if (!createdNew)
         {
-            MessageBox.Show("Game Color Guard zaten çalışıyor. Sistem tepsisini kontrol edin.",
+            Loc.Init(ColorSettings.Load().Language);
+            MessageBox.Show(Loc.T("Game Color Guard zaten çalışıyor. Sistem tepsisini kontrol edin."),
                 "Game Color Guard", MessageBoxButton.OK, MessageBoxImage.Information);
             Shutdown();
             return;
@@ -66,7 +72,7 @@ public partial class App : Application
     private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         AppLogger.Write("Beklenmeyen hata", e.Exception);
-        MessageBox.Show($"Beklenmeyen hata:\n\n{e.Exception.Message}", "Game Color Guard",
+        MessageBox.Show(Loc.F("Beklenmeyen hata:\n\n{0}", e.Exception.Message), "Game Color Guard",
             MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }

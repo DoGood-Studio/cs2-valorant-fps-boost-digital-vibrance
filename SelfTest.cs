@@ -1,7 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Threading;
 using GameColorGuard.Core;
 using GameColorGuard.Tweaks;
 
@@ -108,8 +116,113 @@ internal static class SelfTest
             report.AppendLine("BEKLENMEYEN HATA: " + ex);
         }
 
+        report.AppendLine();
+        failures += CheckLanguages(report);
+
         report.Insert(0, $"Game Color Guard öz-test · {DateTime.Now:yyyy-MM-dd HH:mm:ss} · {failures} hata{Environment.NewLine}");
         File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
         return failures == 0 ? 0 : 1;
+    }
+
+    /// <summary>"--langtest &lt;rapor.txt&gt;": yalnız dil denetimi.</summary>
+    internal static int RunLanguages(string path)
+    {
+        var report = new StringBuilder();
+        int failures = CheckLanguages(report);
+        report.Insert(0, $"Game Color Guard dil testi · {DateTime.Now:yyyy-MM-dd HH:mm:ss} · {failures} hata{Environment.NewLine}");
+        File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
+        return failures == 0 ? 0 : 1;
+    }
+
+    // Yalnız Türkçede bulunan harfler (ç/ö/ü Almanca ve Portekizcede de var).
+    private static readonly char[] TurkishOnly = { 'ğ', 'Ğ', 'ı', 'İ', 'ş', 'Ş' };
+
+    /// <summary>
+    /// Her dilde pencereyi ve her sayfayı ekran dışında kurar (ekran renklerine ve sisteme dokunmaz); ekranda
+    /// çevrilmeden kalmış kaynak metinleri hata, Türkçe harf içeren diğer metinleri uyarı olarak raporlar.
+    /// </summary>
+    private static int CheckLanguages(StringBuilder report)
+    {
+        int failures = 0;
+        IReadOnlyCollection<string> sources = Loc.Sources();
+        ProDataset pro = ProConfig.Load();
+        var properNames = new HashSet<string>(pro.Players.SelectMany(p => new[] { p.Name, p.RealName, p.Team })
+            .Where(s => !string.IsNullOrEmpty(s))!, StringComparer.Ordinal);
+        foreach ((string code, string name) in Loc.Languages) properNames.Add(name);
+
+        // Önce program Türkçe açılıp sayfalar gezilirken canlı olarak Rusçaya geçilir (gerçek açılıştaki gibi hiç
+        // çeviri yapılmamış durumdan); sonra her dil kendi ayarıyla açılır.
+        var runs = new List<(string Code, string Name, string[] States)>
+        {
+            ("tr", "Canlı geçiş TR → RU", new[] { "active", "pro", "lang:ru", "boost", "system", "apps" })
+        };
+        runs.AddRange(Loc.Languages.Where(l => l.Code != "tr").Select(l =>
+            (l.Code, l.Name, new[] { "idle", "active", "visible", "background", "preview", "boost", "apps", "pro", "system" })));
+        foreach ((string code, string name, string[] states) in runs)
+        {
+            var missed = new SortedSet<string>(StringComparer.Ordinal);
+            var suspicious = new SortedSet<string>(StringComparer.Ordinal);
+            var window = new MainWindow(testMode: true, initialSettings: new ColorSettings { Language = code })
+            {
+                ShowActivated = false, ShowInTaskbar = false, WindowStartupLocation = WindowStartupLocation.Manual,
+                Left = -12000, Top = 0, Width = 1160, Height = 800
+            };
+            window.Show();
+            foreach (string state in states)
+            {
+                window.ApplyTestState(state);
+                for (int i = 0; i < 4; i++)
+                {
+                    Thread.Sleep(40);
+                    window.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, new Action(() => { }));
+                }
+                if (Loc.IsSource) continue;   // canlı geçişten önceki Türkçe adımlar denetlenmez
+                foreach (string text in ShownTexts(window))
+                {
+                    string trimmed = text.Trim();
+                    if (trimmed.Length == 0 || properNames.Contains(trimmed)) continue;
+                    if (sources.Contains(trimmed) && Loc.T(trimmed) != trimmed) missed.Add($"[{state}] {trimmed}");
+                    else if (trimmed.IndexOfAny(TurkishOnly) >= 0 && !properNames.Any(n => trimmed.Contains(n, StringComparison.Ordinal)))
+                        suspicious.Add($"[{state}] {trimmed}");
+                }
+            }
+            window.CloseForTest();
+
+            failures += missed.Count;
+            report.AppendLine($"{(missed.Count == 0 ? "OK  " : "HATA")} {name} ({code}): {missed.Count} çevrilmemiş metin, {suspicious.Count} Türkçe harfli metin");
+            foreach (string item in missed) report.AppendLine("    çevrilmedi: " + item);
+            foreach (string item in suspicious) report.AppendLine("    Türkçe?   : " + item);
+        }
+        Loc.Set("tr");
+        return failures;
+    }
+
+    /// <summary>Ekrandaki tüm metinler: TextBlock/Run, ipuçları ve erişilebilirlik adları (yazı kutuları hariç).</summary>
+    private static IEnumerable<string> ShownTexts(DependencyObject root)
+    {
+        var visited = new HashSet<DependencyObject>();
+        var stack = new Stack<DependencyObject>();
+        stack.Push(root);
+        while (stack.Count > 0)
+        {
+            DependencyObject node = stack.Pop();
+            if (!visited.Add(node) || node is TextBox) continue;
+            if (node is TextBlock block)
+            {
+                var runs = block.Inlines.OfType<Run>().ToList();
+                if (runs.Count > 1) foreach (Run run in runs) yield return run.Text;
+                else yield return block.Text;
+            }
+            if (node is FrameworkElement element)
+            {
+                if (element.ToolTip is string tip) yield return tip;
+                string automation = AutomationProperties.GetName(element);
+                if (!string.IsNullOrEmpty(automation)) yield return automation;
+            }
+            foreach (object child in LogicalTreeHelper.GetChildren(node))
+                if (child is DependencyObject d) stack.Push(d);
+            if (node is Visual)
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(node); i++) stack.Push(VisualTreeHelper.GetChild(node, i));
+        }
     }
 }

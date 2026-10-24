@@ -14,7 +14,7 @@ namespace GameColorGuard;
 /// </summary>
 internal static class RenderTest
 {
-    internal static int Run(string path, string state)
+    internal static int Run(string path, string state, string? language = null)
     {
         try
         {
@@ -25,7 +25,8 @@ internal static class RenderTest
                 Gamma = 110,
                 DigitalVibrance = 85,
                 Hue = 0,
-                StartWithWindows = true
+                StartWithWindows = true,
+                Language = language
             };
             // Tanıtım görseli: FPS Boost sayfası önerilen ayarlar açık hâliyle (yalnız görünüm; sisteme bir şey uygulanmaz).
             if (state.Equals("boost-on", StringComparison.OrdinalIgnoreCase))
@@ -46,11 +47,15 @@ internal static class RenderTest
             };
             window.Show();
             Pump(window.Dispatcher);
-            window.ApplyTestState(state);
-            for (int i = 0; i < 6; i++)
+            // Birden çok durum virgülle sırayla uygulanabilir (örn. "pro,lang:en").
+            foreach (string step in state.Split(','))
             {
-                System.Threading.Thread.Sleep(70);
-                Pump(window.Dispatcher);
+                window.ApplyTestState(step);
+                for (int i = 0; i < 6; i++)
+                {
+                    System.Threading.Thread.Sleep(70);
+                    Pump(window.Dispatcher);
+                }
             }
 
             FrameworkElement root = window.RenderRoot;

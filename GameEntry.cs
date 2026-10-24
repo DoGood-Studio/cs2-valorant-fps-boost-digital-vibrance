@@ -70,9 +70,9 @@ public sealed class GameEntry : INotifyPropertyChanged
 
     public string StatusText => _state switch
     {
-        GameRunState.Focused => "Odakta",
-        GameRunState.Running => "Çalışıyor",
-        _ => "Kapalı"
+        GameRunState.Focused => Loc.T("Odakta"),
+        GameRunState.Running => Loc.T("Çalışıyor"),
+        _ => Loc.T("Kapalı")
     };
 
     public Brush StatusBrush => _state switch

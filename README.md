@@ -26,9 +26,11 @@ CS2, VALORANT ve diğer rekabetçi oyunlar için Windows aracı: **oyuna özel r
 | **Pro Ayarlar** | 21 CS2 ve 25 VALORANT top takımından 200'ü aşkın profesyonelin güncel ayarları (kaynak: [prosettings.net](https://prosettings.net)). Takıma göre seçim, arama, oyuncu fotoğrafları ve takım logoları var. Hassasiyet sizin DPI'nıza çevrilir. CS2'de tek tıkla config yükleme, VALORANT'ta crosshair kodu kopyalama. |
 | **Sistem** | Donanım özeti ve öneriler: dizüstü/masaüstü, pil, RAM kanalı (tek/çift), RAM hızı/XMP ve doluluk, fiziksel çekirdek ve P/E çekirdek, işlemcinin güç/ısı sınırı, oyun diski (SSD/HDD, boş alan), GPU sürücüsünün yaşı, ekran Hz, Bellek bütünlüğü, HAGS. Bu sayfa hiçbir ayarı değiştirmez. |
 
+**Diller:** Türkçe, English, Русский, العربية, Deutsch, Español, Português. Dil, Ayarlar kartındaki seçiciden yeniden başlatmadan değişir; ilk açılışta Windows dili kullanılır. **Önerilen ayarlar** düğmesi DoGood Studio'nun renk profilini (aydınlık 55, kontrast 55, gama 1,10, canlılık 85) uygular; sonra istediğiniz gibi değiştirebilirsiniz.
+
 ## Hafiflik
 
-Arka planda RAM kullanmaması için gereksiz animasyon ve öğelerden arındırılmıştır. Pencere tepsiye inince açılmış sayfalar ve indirilmiş görseller bırakılır, kullanılmayan bellek Windows'a geri verilir; oyun yokken süreç taraması saniyede bire düşer. Ölçüm (Windows 11, tepside): ~36 MB çalışma kümesi, ~49 MB özel bellek.
+Arka planda RAM kullanmaması için gereksiz animasyon ve öğelerden arındırılmıştır. Pencere tepsiye inince açılmış sayfalar ve indirilmiş görseller bırakılır, kullanılmayan bellek Windows'a geri verilir; oyun yokken süreç taraması saniyede bire düşer. Ölçüm (Windows 11, tepside): ~33 MB çalışma kümesi, ~49 MB özel bellek.
 
 ## Güvenlik İlkeleri
 
@@ -54,8 +56,9 @@ ya da `build.cmd`.
 
 Test modları (ekran renklerine ve Windows ayarlarına dokunmaz):
 
-- `GameColorGuard.exe --render çıktı.png [idle|active|visible|background|preview|boost|apps|pro|system]`: arayüzü PNG olarak çizer
+- `GameColorGuard.exe --render çıktı.png [idle|active|visible|background|preview|boost|apps|pro|system] [tr|en|ru|ar|de|es|pt]`: arayüzü PNG olarak çizer
 - `GameColorGuard.exe --selftest rapor.txt`: sistem tanıma, arka plan taraması, pro veri ve config üretimini salt okunur doğrular
+- `GameColorGuard.exe --langtest rapor.txt`: her dilde bütün sayfaları çizer, çevrilmeden kalan metni raporlar (canlı dil değişimi dahil)
 
 ## Notlar
 
@@ -66,7 +69,7 @@ Test modları (ekran renklerine ve Windows ayarlarına dokunmaz):
 
 ## English
 
-Game Color Guard is a Windows companion for CS2, VALORANT and other competitive games. It provides a per-game color profile that stays on while the game is visible, a safe and fully reversible FPS Boost with recommendations based on your hardware, a background app cleaner that only closes what you select, one-click pro player configs (data from prosettings.net), and a read-only system report. All tweaks are user-level, need no admin rights, and are restored exactly on revert.
+Game Color Guard is a Windows companion for CS2, VALORANT and other competitive games. It provides a per-game color profile that stays on while the game is visible, a safe and fully reversible FPS Boost with recommendations based on your hardware, a background app cleaner that only closes what you select, one-click pro player configs (data from prosettings.net), and a read-only system report. The interface is available in Turkish, English, Russian, Arabic, German, Spanish and Portuguese. All tweaks are user-level, need no admin rights, and are restored exactly on revert.
 
 ## Lisans ve Geliştirici
 

@@ -22,6 +22,7 @@ internal sealed class SystemPage : UserControl
         {
             _ctx.RefreshSystem();
             Render();
+            Loc.Translate(this);
             _ctx.Notify("Sistem bilgisi yenilendi", false);
         });
         page.Children.Add(Ui.PageHeader("Sistem",
@@ -30,6 +31,7 @@ internal sealed class SystemPage : UserControl
         page.Children.Add(_body);
         Content = Ui.PageScroll(page);
         Render();
+        Loc.Translate(this);
     }
 
     private void Render()
@@ -61,9 +63,9 @@ internal sealed class SystemPage : UserControl
         int buildAt = s.Windows.IndexOf(" (", StringComparison.Ordinal);
         tiles.Children.Add(Tile("", "Windows", buildAt > 0 ? s.Windows[..buildAt] : s.Windows,
             buildAt > 0 ? s.Windows[(buildAt + 2)..].TrimEnd(')') : ""));
-        tiles.Children.Add(Tile("", "Bellek bütünlüğü", s.MemoryIntegrity switch { true => "Açık", false => "Kapalı", _ => "bilinmiyor" },
+        tiles.Children.Add(Tile("", "Bellek bütünlüğü", s.MemoryIntegrity switch { true => "Açık", false => Loc.T("Kapalı", "ayar"), _ => "bilinmiyor" },
             "Güvenlik özelliği; bilgi amaçlı"));
-        tiles.Children.Add(Tile("", "GPU zamanlama (HAGS)", s.Hags switch { true => "Açık", false => "Kapalı", _ => "bilinmiyor" },
+        tiles.Children.Add(Tile("", "GPU zamanlama (HAGS)", s.Hags switch { true => "Açık", false => Loc.T("Kapalı", "ayar"), _ => "bilinmiyor" },
             "Değiştirmek yeniden başlatma ister"));
         foreach (GameDrive drive in s.GameDrives)
             tiles.Children.Add(Tile("", $"Oyun diski {drive.Root}", $"{(drive.Ssd switch { true => "SSD", false => "HDD", _ => "Disk" })} · {drive.FreeGb:0} GB boş",
@@ -126,7 +128,7 @@ internal sealed class SystemPage : UserControl
         var stack = new StackPanel();
         var head = new StackPanel { Orientation = Orientation.Horizontal };
         head.Children.Add(Ui.Icon(glyph, 12, alert is { } a ? Ui.Solid(a) : Ui.Brush("Text3Brush")));
-        head.Children.Add(new TextBlock { Text = label.ToUpperInvariant(), Style = Ui.Style("Eyebrow"), Margin = new Thickness(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center });
+        head.Children.Add(new TextBlock { Text = Loc.T(label).ToUpper(Loc.Culture), Style = Ui.Style("Eyebrow"), Margin = new Thickness(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center });
         stack.Children.Add(head);
         stack.Children.Add(new TextBlock
         {

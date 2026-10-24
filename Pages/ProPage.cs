@@ -17,7 +17,7 @@ namespace GameColorGuard.Pages;
 /// </summary>
 internal sealed class ProPage : UserControl
 {
-    private static readonly CultureInfo Tr = CultureInfo.GetCultureInfo("tr-TR");
+    private static CultureInfo Tr => Loc.Culture;
 
     private readonly PageContext _ctx;
     private readonly ProDataset _data;
@@ -115,6 +115,7 @@ internal sealed class ProPage : UserControl
         SizeChanged += (_, e) => _cards.Columns = e.NewSize.Width >= 1180 ? 3 : e.NewSize.Width >= 640 ? 2 : 1;
         BuildTeamBar();
         RenderCards();
+        Loc.Translate(this);
     }
 
     private void BuildTeamBar()
@@ -126,6 +127,7 @@ internal sealed class ProPage : UserControl
         // Takımı olmayan (serbest/ listede olmayan takım) oyuncular
         if (_data.Players.Any(p => p.Game.Equals(_game, StringComparison.OrdinalIgnoreCase) && p.TeamSlug is null))
             _teamBar.Children.Add(TeamChip("", "Diğer", null));
+        Loc.Translate(_teamBar);
     }
 
     private RadioButton TeamChip(string? slug, string name, string? logo)
@@ -167,9 +169,10 @@ internal sealed class ProPage : UserControl
                         (p.Team?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false) ||
                         (p.RealName?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false))
             .ToList();
-        _countText.Text = $"{players.Count} oyuncu";
+        Loc.SetText(_countText, $"{players.Count} oyuncu");
         _cards.Children.Clear();
         foreach (ProPlayer player in players) _cards.Children.Add(BuildCard(player));
+        Loc.Translate(_cards);
     }
 
     private Border BuildCard(ProPlayer player)
@@ -336,7 +339,7 @@ internal sealed class ProPage : UserControl
     private static StackPanel Stat(string label, string value)
     {
         var stack = new StackPanel { Margin = new Thickness(0, 0, 8, 8) };
-        stack.Children.Add(new TextBlock { Text = label.ToUpper(Tr), Style = Ui.Style("Eyebrow") });
+        stack.Children.Add(new TextBlock { Text = Loc.T(label).ToUpper(Tr), Style = Ui.Style("Eyebrow") });
         stack.Children.Add(new TextBlock
         {
             Text = value, FontSize = 14, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 3, 0, 0),
@@ -365,7 +368,16 @@ internal sealed class ProPage : UserControl
         _ => value
     };
 
-    private static string? CountryName(ProPlayer player) => player.Country?.ToUpperInvariant() switch
+    /// <summary>Türkçede ülke adı; diğer dillerde çevirisi (yoksa veri setindeki İngilizce ad).</summary>
+    private static string? CountryName(ProPlayer player)
+    {
+        string? turkish = TurkishCountryName(player);
+        if (Loc.IsSource || turkish is null) return turkish;
+        string translated = Loc.T(turkish);
+        return translated != turkish ? translated : player.CountryName ?? turkish;
+    }
+
+    private static string? TurkishCountryName(ProPlayer player) => player.Country?.ToUpperInvariant() switch
     {
         null => player.CountryName,
         "TR" => "Türkiye",

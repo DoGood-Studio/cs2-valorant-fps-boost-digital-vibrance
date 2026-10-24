@@ -66,6 +66,7 @@ internal sealed class BackgroundPage : UserControl
 
         Content = Ui.PageScroll(page);
         UpdateSelection();
+        Loc.Translate(this);
         // İlk görünüşte bir kez tarar (sayfa açılmadıkça arka planda tarama yapılmaz).
         IsVisibleChanged += async (_, _) => { if (IsVisible && !_scannedOnce && !_ctx.TestMode) await ScanAsync(); };
     }
@@ -76,19 +77,19 @@ internal sealed class BackgroundPage : UserControl
         _scanning = true;
         _scannedOnce = true;
         _scanButton.IsEnabled = false;
-        _scanInfo.Text = "Taranıyor… (işlemci kullanımı 1 saniye ölçülüyor)";
+        Loc.SetText(_scanInfo, "Taranıyor… (işlemci kullanımı 1 saniye ölçülüyor)");
         try
         {
             var games = _ctx.Settings.GameExecutables.ToList();
             _apps = await Task.Run(() => BackgroundScanner.Scan(games, TimeSpan.FromSeconds(1)));
             Render();
             long total = _apps.Where(a => a.CanClose).Sum(a => a.MemoryBytes);
-            _scanInfo.Text = $"{DateTime.Now:HH:mm} · {_apps.Count} uygulama · kapatılabilenler toplam {Megabytes(total)} RAM kullanıyor";
+            Loc.SetText(_scanInfo, $"{DateTime.Now:HH:mm} · {_apps.Count} uygulama · kapatılabilenler toplam {Megabytes(total)} RAM kullanıyor");
         }
         catch (Exception ex)
         {
             AppLogger.Write("Arka plan taraması başarısız", ex);
-            _scanInfo.Text = "Tarama başarısız: " + ex.Message;
+            Loc.SetText(_scanInfo, "Tarama başarısız: " + ex.Message);
         }
         finally
         {
@@ -113,7 +114,7 @@ internal sealed class BackgroundPage : UserControl
         sample[0].IsSelected = true;
         _apps = sample;
         Render();
-        _scanInfo.Text = "12:00 · 6 uygulama · kapatılabilenler toplam 2,3 GB RAM kullanıyor";
+        Loc.SetText(_scanInfo, "12:00 · 6 uygulama · kapatılabilenler toplam 2,3 GB RAM kullanıyor");
     }
 
     private static BackgroundApp Sample(string exe, string name, AppCategory category, string reason, double cpu, long mb, bool window)
@@ -137,6 +138,7 @@ internal sealed class BackgroundPage : UserControl
             _list.Children.Add(Ui.Card(stack));
         }
         UpdateSelection();
+        Loc.Translate(_list);
     }
 
     private Border BuildRow(BackgroundApp app)
@@ -200,9 +202,9 @@ internal sealed class BackgroundPage : UserControl
     private void UpdateSelection()
     {
         var selected = _apps.Where(a => a.IsSelected).ToList();
-        _selectionInfo.Text = selected.Count == 0
+        Loc.SetText(_selectionInfo, selected.Count == 0
             ? "Kapatmak istediklerinizi işaretleyin ya da 'Önerilenleri seç'e basın."
-            : $"{selected.Count} uygulama seçili · {Megabytes(selected.Sum(a => a.MemoryBytes))} RAM boşalacak";
+            : $"{selected.Count} uygulama seçili · {Megabytes(selected.Sum(a => a.MemoryBytes))} RAM boşalacak");
         _closeButton.IsEnabled = selected.Count > 0;
     }
 
@@ -212,12 +214,12 @@ internal sealed class BackgroundPage : UserControl
         if (selected.Count == 0 || _ctx.TestMode) return;
         string names = string.Join("\n• ", selected.Select(a => a.Name));
         MessageBoxResult answer = MessageBox.Show(Window.GetWindow(this)!,
-            $"Şu uygulamalar kapatılacak:\n\n• {names}\n\nPencereli olanlar düzgünce kapatılır; kaydedilmemiş işiniz varsa uygulama sorar. Devam edilsin mi?",
+            Loc.F("Şu uygulamalar kapatılacak:\n\n• {0}\n\nPencereli olanlar düzgünce kapatılır; kaydedilmemiş işiniz varsa uygulama sorar. Devam edilsin mi?", names),
             "Game Color Guard", MessageBoxButton.YesNo, MessageBoxImage.Question);
         if (answer != MessageBoxResult.Yes) return;
 
         _closeButton.IsEnabled = false;
-        _scanInfo.Text = "Kapatılıyor…";
+        Loc.SetText(_scanInfo, "Kapatılıyor…");
         IReadOnlyList<string> problems = await Task.Run(() => BackgroundScanner.Close(selected));
         int closed = selected.Count - problems.Count;
         _ctx.Notify(problems.Count == 0

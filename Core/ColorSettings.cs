@@ -9,10 +9,11 @@ namespace GameColorGuard.Core;
 internal sealed class ColorSettings
 {
     public int SettingsVersion { get; set; } = 2;
-    public int Brightness { get; set; } = 50;
-    public int Contrast { get; set; } = 50;
-    public int Gamma { get; set; } = 100;
-    public int DigitalVibrance { get; set; } = 50;
+    // Yeni kurulumlar önerilen profille başlar (aydınlık 55, kontrast 55, gama 1,10, canlılık 85); kayıtlı ayar dosyası varsa o kullanılır.
+    public int Brightness { get; set; } = 55;
+    public int Contrast { get; set; } = 55;
+    public int Gamma { get; set; } = 110;
+    public int DigitalVibrance { get; set; } = 85;
     public int Hue { get; set; } = 0;
     public int Red { get; set; } = 100;
     public int Green { get; set; } = 100;
@@ -34,6 +35,8 @@ internal sealed class ColorSettings
     public PerformanceSettings Performance { get; set; } = new();
     /// <summary>Pro ayar sayfasında hassasiyet dönüşümü için kullanıcının fare DPI'ı.</summary>
     public int MouseDpi { get; set; } = 800;
+    /// <summary>Arayüz dili (tr, en, ru, ar, de, es, pt); boşsa Windows dilinden seçilir.</summary>
+    public string? Language { get; set; }
 
     // Önceki sürümle aynı klasör: kullanıcının kayıtlı profili aynen korunur.
     private static readonly string Folder = Path.Combine(

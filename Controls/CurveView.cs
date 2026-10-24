@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using GameColorGuard.Core;
 
 namespace GameColorGuard.Controls;
 
@@ -72,8 +73,8 @@ internal sealed class CurveView : FrameworkElement
         }
 
         double dip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
-        var output = new FormattedText("ÇIKTI", CultureInfo.CurrentCulture, FlowDirection.LeftToRight, LabelFace, 10, LabelBrush, dip);
-        var input = new FormattedText("GİRDİ", CultureInfo.CurrentCulture, FlowDirection.LeftToRight, LabelFace, 10, LabelBrush, dip);
+        var output = new FormattedText(Loc.T("ÇIKTI"), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, LabelFace, 10, LabelBrush, dip);
+        var input = new FormattedText(Loc.T("GİRDİ"), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, LabelFace, 10, LabelBrush, dip);
         dc.DrawText(output, new Point(plot.Left + 6, plot.Top + 4));
         dc.DrawText(input, new Point(plot.Right - input.Width - 6, plot.Bottom - input.Height - 4));
     }

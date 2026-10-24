@@ -7,7 +7,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -94,8 +96,10 @@ public partial class MainWindow : Window
         _displayGamma = new DisplayGamma(_settings, leftoverSuspected);
         _nvidiaColor = new NvidiaColorControl(_settings.DigitalVibrance, _settings.Hue, leftoverSuspected);
 
+        Loc.Init(_settings.Language);
         InitializeComponent();
         FitToWorkArea();
+        BuildLanguagePicker();
 
         // FPS Boost ayarları; test/çizim modunda sisteme hiçbir şey uygulanmaz.
         var catalog = new TweakCatalog(_settings);
@@ -106,6 +110,12 @@ public partial class MainWindow : Window
 
         BuildSliders();
         GameItems.ItemsSource = _games;
+        // Satır şablonundaki ipuçları satırlar oluşunca çevrilir.
+        GameItems.ItemContainerGenerator.StatusChanged += (_, _) =>
+        {
+            if (GameItems.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => Loc.Translate(GameItems)));
+        };
         RefreshGameList();
         BuildStaticStrips();
         UpdateVisualPreview();
@@ -143,15 +153,22 @@ public partial class MainWindow : Window
         {
             _saveFlashTimer.Stop();
             SaveGlyph.Text = "";
-            SaveText.Text = "Profili kaydet";
+            Loc.SetText(SaveText, "Profili kaydet");
         };
 
         SourceInitialized += (_, _) => ApplyWindowAttributes();
-        StateChanged += (_, _) => UpdateMaximizeState();
+        StateChanged += (_, _) =>
+        {
+            UpdateMaximizeState();
+            // Simge durumuna küçültülünce de kullanılmayan bellek geri verilir.
+            if (WindowState == WindowState.Minimized && !_testMode)
+                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(TrimMemory));
+        };
         PreviewKeyDown += OnWindowPreviewKeyDown;
 
         SetStatus(ReadyText(), Tone.Neutral);
         SetHero(HeroState.Idle, "Beklemede", IdleDetail(), -1);
+        Loc.Translate(this);
 
         if (!testMode)
         {
@@ -216,6 +233,13 @@ public partial class MainWindow : Window
             _pages[page] = created;
             PageHost.Children.Add(created);
         }
+        // Yalnız açık sayfa bellekte kalır: diğerleri (özellikle fotoğraflı Pro sayfası) bırakılır, dönünce yeniden kurulur.
+        foreach (string key in _pages.Keys.Where(k => k != page).ToList())
+        {
+            PageHost.Children.Remove(_pages[key]);
+            _pages.Remove(key);
+            if (key == "pro") ImageCache.ReleaseMemory();
+        }
         foreach ((string key, FrameworkElement element) in _pages)
             element.Visibility = key == page ? Visibility.Visible : Visibility.Collapsed;
     }
@@ -254,13 +278,13 @@ public partial class MainWindow : Window
 
     private void ShowToast(string text, bool error)
     {
-        ToastText.Text = text;
+        Loc.SetText(ToastText, text);
         ToastDot.Fill = Solid(error ? DangerColor : SuccessColor);
         Toast.Visibility = Visibility.Visible;
         _toastTimer.Stop();
         _toastTimer.Interval = TimeSpan.FromSeconds(error || text.Length > 70 ? 8 : 5);
         _toastTimer.Start();
-        _tray?.SetText(text);
+        _tray?.SetText(Loc.T(text));
     }
 
     private void KeepVisible_Changed(object sender, RoutedEventArgs e)
@@ -274,9 +298,56 @@ public partial class MainWindow : Window
             : "Profil yalnızca oyun odaktayken uygulanacak", Tone.Neutral);
     }
 
-    private void UpdateColorSubtitle() => ColorPageSubtitle.Text = _settings.KeepWhileVisible
+    private void UpdateColorSubtitle() => Loc.SetText(ColorPageSubtitle, _settings.KeepWhileVisible
         ? "İzlenen oyun açıkken ve ekranda görünürken uygulanır; oyunu küçültünce ya da başka bir pencere örtünce eski haline döner."
-        : "İzlenen oyun odaktayken uygulanır; Alt+Tab yaptığınızda ekranınız eski haline döner.";
+        : "İzlenen oyun odaktayken uygulanır; Alt+Tab yaptığınızda ekranınız eski haline döner.");
+
+    // ------------------------------------------------------------------ Dil
+
+    private void BuildLanguagePicker()
+    {
+        foreach ((string code, string name) in Loc.Languages)
+        {
+            var item = new RadioButton
+            {
+                Style = (Style)FindResource("FilterTab"),
+                GroupName = "Language",
+                Content = name,
+                Tag = code,
+                IsChecked = code == Loc.Language
+            };
+            AutomationProperties.SetName(item, name);
+            item.Checked += Language_Checked;
+            LanguagePanel.Children.Add(item);
+        }
+        LanguageButtonText.Text = Loc.Languages.First(l => l.Code == Loc.Language).Name;
+    }
+
+    private void LanguageButton_Click(object sender, RoutedEventArgs e) => LanguagePopup.IsOpen = !LanguagePopup.IsOpen;
+
+    /// <summary>Dili yeniden başlatmadan değiştirir: pencere yeniden çevrilir, açık sayfa yeni dilde kurulur.</summary>
+    private void Language_Checked(object sender, RoutedEventArgs e)
+    {
+        if (sender is not RadioButton { Tag: string code } || code == Loc.Language) return;
+        LanguagePopup.IsOpen = false;
+        LanguageButtonText.Text = Loc.Languages.First(l => l.Code == code).Name;
+        _settings.Language = code;
+        SaveQuietly();
+        Loc.Set(code);
+        Loc.Translate(this);
+        _tray?.Retranslate();
+        RefreshGameList();
+        CheckGameState();
+        Curve.InvalidateVisual();
+        string? openPage = _pages.Keys.FirstOrDefault();
+        if (openPage is not null)
+        {
+            PageHost.Children.Clear();
+            _pages.Clear();
+            ShowPage(openPage);
+        }
+        SetStatus("Dil değiştirildi", Tone.Neutral);
+    }
 
     // ------------------------------------------------------------------ Kurulum
 
@@ -326,23 +397,23 @@ public partial class MainWindow : Window
 
     private void UpdateHardwareChips()
     {
-        DisplayChipText.Text = $"{Math.Max(1, _displayGamma.DisplayCount)} ekran";
+        Loc.SetText(DisplayChipText, $"{Math.Max(1, _displayGamma.DisplayCount)} ekran");
         // Test/çizim modunda Büyüteç API'si başlatılmaz; motor hazır gösterilir.
         if (_testMode || _colorMatrix.IsAvailable)
         {
             NvidiaChipDot.Fill = Solid(SuccessColor);
-            NvidiaChipText.Text = "Renk motoru hazır";
-            NvidiaLayerText.Text = "WINDOWS RENK MOTORU";
+            Loc.SetText(NvidiaChipText, "Renk motoru hazır");
+            Loc.SetText(NvidiaLayerText, "WINDOWS RENK MOTORU");
             NvidiaLayerText.Foreground = (Brush)FindResource("Text2Brush");
-            VibranceSubText.Text = "Digital Vibrance ve renk tonu";
+            Loc.SetText(VibranceSubText, "Digital Vibrance ve renk tonu");
         }
         else
         {
             NvidiaChipDot.Fill = Solid(WarningColor);
-            NvidiaChipText.Text = "Renk motoru yok";
-            NvidiaLayerText.Text = "RENK MOTORU YOK";
+            Loc.SetText(NvidiaChipText, "Renk motoru yok");
+            Loc.SetText(NvidiaLayerText, "RENK MOTORU YOK");
             NvidiaLayerText.Foreground = Solid(WarningColor);
-            VibranceSubText.Text = "Windows renk motoru başlatılamadı; bu ayarlar uygulanamaz";
+            Loc.SetText(VibranceSubText, "Windows renk motoru başlatılamadı; bu ayarlar uygulanamaz");
         }
     }
 
@@ -371,8 +442,8 @@ public partial class MainWindow : Window
     {
         var dialog = new Microsoft.Win32.OpenFileDialog
         {
-            Title = "Oyunun çalıştırılabilir dosyasını seçin",
-            Filter = "Oyun uygulaması (*.exe)|*.exe",
+            Title = Loc.T("Oyunun çalıştırılabilir dosyasını seçin"),
+            Filter = Loc.T("Oyun uygulaması (*.exe)|*.exe"),
             CheckFileExists = true,
             Multiselect = false
         };
@@ -653,7 +724,7 @@ public partial class MainWindow : Window
         double remaining = Math.Max(0, (_previewEndsAt - DateTime.UtcNow).TotalSeconds);
         int seconds = (int)Math.Ceiling(remaining);
         PreviewGlyph.Text = "";
-        PreviewText.Text = $"Önizlemeyi bitir · {seconds}";
+        Loc.SetText(PreviewText, $"Önizlemeyi bitir · {seconds}");
         SetHero(HeroState.Preview, "Önizleme",
             $"Profil şu an ekranınızda. {seconds} sn sonra eski haline döner.", remaining / PreviewSeconds);
     }
@@ -693,7 +764,7 @@ public partial class MainWindow : Window
         _liveApplyTimer.Stop();
         _previewActive = false;
         PreviewGlyph.Text = "";
-        PreviewText.Text = "10 sn önizle";
+        Loc.SetText(PreviewText, "10 sn önizle");
     }
 
     private void LiveApplyDuringPreview()
@@ -897,7 +968,7 @@ public partial class MainWindow : Window
         {
             SetStatus("Profil kaydedildi", Tone.Success);
             SaveGlyph.Text = "";
-            SaveText.Text = "Kaydedildi";
+            Loc.SetText(SaveText, "Kaydedildi");
             _saveFlashTimer.Stop();
             _saveFlashTimer.Start();
         }
@@ -910,7 +981,7 @@ public partial class MainWindow : Window
         try
         {
             _settings.Save();
-            AutoSaveText.Text = $"Kaydedildi · {DateTime.Now:HH:mm}";
+            Loc.SetText(AutoSaveText, $"Kaydedildi · {DateTime.Now:HH:mm}");
             return true;
         }
         catch (Exception ex)
@@ -926,6 +997,16 @@ public partial class MainWindow : Window
         if (_testMode) return;
         _saveDebounceTimer.Stop();
         _saveDebounceTimer.Start();
+    }
+
+    /// <summary>Önerilen profil (DoGood Studio): aydınlık 55, kontrast 55, gama 1,10, canlılık 85; kullanıcı sonra değiştirebilir.</summary>
+    private static readonly int[] RecommendedValues = { 55, 55, 110, 85, 0, 100, 100, 100 };
+
+    private void Recommended_Click(object sender, RoutedEventArgs e)
+    {
+        for (int i = 0; i < _sliders.Count && i < RecommendedValues.Length; i++) _sliders[i].Value = RecommendedValues[i];
+        if (_gameProfileOn) _profileApplied = ApplyProfile(out _);
+        SetStatus("Önerilen renk ayarları uygulandı; istediğiniz gibi değiştirebilirsiniz", Tone.Success);
     }
 
     private void Reset_Click(object sender, RoutedEventArgs e)
@@ -1013,9 +1094,9 @@ public partial class MainWindow : Window
 
     private void SetStatus(string text, Tone tone)
     {
-        FooterText.Text = text;
+        Loc.SetText(FooterText, text);
         FooterDot.Fill = Solid(ToneColor(tone));
-        _tray?.SetText(text);
+        _tray?.SetText(Loc.T(text));
     }
 
     private void SetHero(HeroState state, string title, string detail, double progress)
@@ -1029,8 +1110,8 @@ public partial class MainWindow : Window
             _ => (Muted, "", false)
         };
 
-        if (HeroTitle.Text != title) HeroTitle.Text = title;
-        if (HeroDetail.Text != detail) HeroDetail.Text = detail;
+        if (HeroTitle.Text != Loc.T(title)) Loc.SetText(HeroTitle, title);
+        if (HeroDetail.Text != Loc.T(detail)) Loc.SetText(HeroDetail, detail);
         HeroRing.Set(color, glyph, progress, emphasis);
 
         if (_heroState == state) return;
@@ -1170,7 +1251,7 @@ public partial class MainWindow : Window
             if (!_trayHintShown)
             {
                 _trayHintShown = true;
-                _tray?.ShowBalloon("Game Color Guard", "Program arka planda seçtiğiniz oyunları izlemeye devam ediyor.");
+                _tray?.ShowBalloon("Game Color Guard", Loc.T("Program arka planda seçtiğiniz oyunları izlemeye devam ediyor."));
             }
             return;
         }
@@ -1248,6 +1329,10 @@ public partial class MainWindow : Window
             case "apps":
                 ShowPage("background");
                 ((BackgroundPage)_pages["background"]).ShowSample();
+                break;
+            case { } s when s.StartsWith("lang:", StringComparison.Ordinal):
+                // Dil seçicideki öğeyi seçer: canlı dil değişimi gerçek tıklamadaki yoldan geçer.
+                LanguagePanel.Children.OfType<RadioButton>().First(r => (string)r.Tag == s[5..]).IsChecked = true;
                 break;
             default:
                 UpdateGameState(Array.Empty<string>(), null);

@@ -24,8 +24,12 @@ internal sealed class BoostPage : UserControl
     {
         _ctx = ctx;
         Build();
-        _ctx.Performance.Changed += () => Dispatcher.BeginInvoke(Refresh);
+        // Abonelik yalnız sayfa ağaçtayken: bekçi sayfayı canlı tutmasın (sayfa kapatılınca bellekten silinebilsin).
+        Action changed = () => Dispatcher.BeginInvoke(Refresh);
+        Loaded += (_, _) => _ctx.Performance.Changed += changed;
+        Unloaded += (_, _) => _ctx.Performance.Changed -= changed;
         IsVisibleChanged += (_, _) => { if (IsVisible) Refresh(); };
+        Loc.Translate(this);
     }
 
     private TweakCatalog Catalog => _ctx.Performance.Catalog;
@@ -205,6 +209,7 @@ internal sealed class BoostPage : UserControl
                 ? "Bu sistem için önerilen ayarların hepsi açık."
                 : $"Bu sistem için önerilen {recommended} ayardan {recommendedOn} tanesi açık. 'Önerilenleri uygula' ile hepsini tek tıkla açın.";
             _alwaysOn.IsChecked = _ctx.Performance.AlwaysOn;
+            Loc.Translate(this);
         }
         finally { _updating = false; }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using GameColorGuard.Core;
 using Forms = System.Windows.Forms;
 
 namespace GameColorGuard;
@@ -46,6 +47,14 @@ internal sealed class TrayIcon : IDisposable
         };
     }
 
+    /// <summary>Menü öğelerini seçili dile çevirir (Türkçe asıl Tag'de durur).</summary>
+    public void Retranslate()
+    {
+        if (_disposed || _notifyIcon.ContextMenuStrip is null) return;
+        foreach (Forms.ToolStripItem item in _notifyIcon.ContextMenuStrip.Items)
+            if (item.Tag is string source) item.Text = Loc.T(source);
+    }
+
     public void SetText(string text)
     {
         if (_disposed) return;
@@ -60,8 +69,9 @@ internal sealed class TrayIcon : IDisposable
 
     private static void AddItem(Forms.ContextMenuStrip menu, string text, Action action, bool bold = false)
     {
-        var item = new Forms.ToolStripMenuItem(text)
+        var item = new Forms.ToolStripMenuItem(Loc.T(text))
         {
+            Tag = text,
             Padding = new Forms.Padding(8, 6, 16, 6)
         };
         if (bold) item.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
