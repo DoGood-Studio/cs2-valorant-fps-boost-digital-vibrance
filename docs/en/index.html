@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Vibrance & FPS Boost for CS2 and VALORANT (NVIDIA, AMD, Intel) — Game Color Guard</title>
+<meta name="description" content="Free Windows app that makes enemies easier to see: per-game digital vibrance, brightness and gamma for CS2 and VALORANT on NVIDIA, AMD, Intel and laptops, plus a safe FPS boost and 200+ pro settings.">
+<meta name="keywords" content="digital vibrance CS2, best digital vibrance settings, VALORANT digital vibrance, make VALORANT more vibrant, digital vibrance AMD, digital vibrance Intel laptop, VibranceGUI alternative, CS2 FPS boost, increase FPS VALORANT, CS2 gamma, CS2 pro settings, VALORANT crosshair codes">
+<meta name="author" content="DoGood Studio">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://dogood-studio.github.io/game-color-guard/en/">
+<link rel="alternate" hreflang="en" href="https://dogood-studio.github.io/game-color-guard/en/">
+<link rel="alternate" hreflang="tr" href="https://dogood-studio.github.io/game-color-guard/">
+<link rel="alternate" hreflang="x-default" href="https://dogood-studio.github.io/game-color-guard/en/">
+<link rel="icon" type="image/png" href="../logo.png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Game Color Guard">
+<meta property="og:title" content="Game Color Guard — Digital Vibrance & FPS Boost for CS2 and VALORANT">
+<meta property="og:description" content="Make enemies easier to see. Per-game digital vibrance on any GPU (NVIDIA, AMD, Intel), safe and reversible FPS boost, 200+ pro player settings. Free.">
+<meta property="og:url" content="https://dogood-studio.github.io/game-color-guard/en/">
+<meta property="og:image" content="https://dogood-studio.github.io/game-color-guard/cs2-once-sonra.jpg">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Game Color Guard — Digital Vibrance & FPS Boost for CS2 / VALORANT">
+<meta name="twitter:description" content="Digital vibrance on any GPU, safe FPS boost and pro settings in one free app.">
+<meta name="twitter:image" content="https://dogood-studio.github.io/game-color-guard/cs2-once-sonra.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Game Color Guard",
+  "operatingSystem": "Windows 10, Windows 11",
+  "applicationCategory": "GameApplication",
+  "softwareVersion": "3.2.0",
+  "description": "Free Windows app for CS2 and VALORANT: per-game digital vibrance, brightness, contrast and gamma on NVIDIA, AMD and Intel GPUs, a safe and reversible FPS boost, a background app cleaner and 200+ pro player settings.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Organization", "name": "DoGood Studio" },
+  "license": "https://polyformproject.org/licenses/noncommercial/1.0.0",
+  "downloadUrl": "https://github.com/DoGood-Studio/game-color-guard/releases/latest/download/GameColorGuard.exe",
+  "screenshot": "https://dogood-studio.github.io/game-color-guard/en/color.png",
+  "inLanguage": ["en", "tr", "ru", "ar", "de", "es", "pt"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Will I get banned (VAC, Vanguard, FACEIT)?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The app never reads or writes game memory and never injects into the game. It only changes Windows display and system settings, the same level as the NVIDIA or AMD control panel." } },
+    { "@type": "Question", "name": "Does digital vibrance work on AMD and Intel graphics?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Game Color Guard applies colors through the Windows color engine instead of the graphics driver, so it works on NVIDIA, AMD and Intel GPUs, including laptops with hybrid graphics." } },
+    { "@type": "Question", "name": "What is the best digital vibrance setting for CS2?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Most guides suggest 60–80% in the NVIDIA Control Panel, and some top players keep the default. Game Color Guard starts from a recommended profile you can fine-tune with a live preview." } },
+    { "@type": "Question", "name": "How do I make VALORANT more vibrant?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Raise vibrance (NVIDIA: Digital Vibrance, AMD: Saturation) and slightly raise brightness or gamma. Game Color Guard does this per game on any GPU, only while VALORANT is on screen. Use windowed fullscreen." } },
+    { "@type": "Question", "name": "Does digital vibrance increase FPS?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Vibrance is visual only. FPS gains come from the separate FPS Boost page, which reduces background load and sets Windows options for games." } }
+  ]
+}
+</script>
+
+<style>
+  :root {
+    --bg0: #0A0B0E; --bg1: #0E1014; --surface: #13161B; --surface2: #1A1E25; --stroke: #232830; --stroke2: #2E3440;
+    --text: #F2F3F5; --text2: #A3AAB7; --text3: #7E8696;
+    --ember: #FF7A1A; --ember3: #FFB066; --ember4: #FF9A3D; --success: #3DD68C;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg0); color: var(--text);
+    font: 16px/1.6 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    background-image: radial-gradient(1200px 600px at 80% -10%, rgba(255,122,26,.14), transparent 60%);
+  }
+  a { color: var(--ember3); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--text); text-decoration: none; }
+  .brand img { width: 30px; height: 30px; }
+  nav a { color: var(--text2); text-decoration: none; margin-left: 18px; font-size: 14px; }
+  nav a:hover { color: var(--text); }
+  .hero { padding: 48px 0 32px; text-align: center; }
+  .hero h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.12; margin: 0 0 16px; letter-spacing: -.02em; }
+  .hero h1 span { background: linear-gradient(135deg, #FF9A3D, #F0561E); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p { color: var(--text2); font-size: clamp(16px, 2.2vw, 19px); max-width: 760px; margin: 0 auto 28px; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 12px; font-weight: 600; text-decoration: none; }
+  .btn.primary { background: linear-gradient(135deg, #FF9A3D, #F0561E); color: #1A0D04; box-shadow: 0 8px 28px rgba(255,122,26,.3); }
+  .btn.secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--stroke2); }
+  .meta { color: var(--text3); font-size: 13px; margin-top: 14px; }
+  section { padding: 40px 0; }
+  h2 { font-size: clamp(24px, 3.4vw, 34px); margin: 0 0 8px; letter-spacing: -.01em; }
+  .lead { color: var(--text2); margin: 0 0 24px; max-width: 760px; }
+
+  /* Before / after slider */
+  .compare { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--stroke2); aspect-ratio: 16 / 9; user-select: none; touch-action: none; background: var(--bg1); }
+  .compare img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .compare .after { clip-path: inset(0 0 0 var(--pos, 50%)); }
+  .compare .handle { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 3px; background: #fff; transform: translateX(-50%); pointer-events: none; }
+  .compare .handle::after { content: "⇆"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 42px; height: 42px; border-radius: 50%; background: #fff; color: #111; display: grid; place-items: center; font-weight: 700; }
+  .compare input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+  .tag { position: absolute; top: 14px; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; pointer-events: none; }
+  .tag.l { left: 14px; background: rgba(20,22,27,.8); }
+  .tag.r { right: 14px; background: rgba(255,122,26,.9); color: #1A0D04; }
+  .note { color: var(--text3); font-size: 13px; margin-top: 10px; }
+  .tabs { display: inline-flex; gap: 4px; padding: 4px; margin-bottom: 14px; background: var(--bg1); border: 1px solid var(--stroke); border-radius: 12px; }
+  .tabs button { font: inherit; font-size: 14px; font-weight: 600; color: var(--text2); background: transparent; border: 0; border-radius: 9px; padding: 8px 16px; cursor: pointer; }
+  .tabs button.on { background: var(--surface2); color: var(--text); box-shadow: inset 0 0 0 1px var(--stroke2); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .card { background: linear-gradient(180deg, #15181E, #121419); border: 1px solid var(--stroke); border-radius: 16px; padding: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 17px; }
+  .card p { margin: 0; color: var(--text2); font-size: 14.5px; }
+  .card .ico { font-size: 22px; margin-bottom: 8px; }
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .shots figure { margin: 0; }
+  .shots img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--stroke2); display: block; }
+  .shots figcaption { color: var(--text3); font-size: 13px; margin-top: 6px; }
+  ul.check { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  ul.check li { padding-left: 26px; position: relative; color: var(--text2); }
+  ul.check li::before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: 700; }
+  ul.cross li::before { content: "✕"; color: #FF5A5F; }
+  details { background: var(--surface); border: 1px solid var(--stroke); border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--text2); margin: 10px 0 0; }
+  footer { border-top: 1px solid var(--stroke); padding: 28px 0 40px; color: var(--text3); font-size: 14px; }
+  footer strong { color: var(--ember3); }
+  @media (max-width: 640px) { nav a:not(.lang) { display: none; } .hero { padding-top: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="./"><img src="../logo.png" alt="Game Color Guard logo" width="30" height="30">Game Color Guard</a>
+    <nav>
+      <a href="#before-after">Before / After</a>
+      <a href="#features">Features</a>
+      <a href="#safety">Safety</a>
+      <a href="#faq">FAQ</a>
+      <a class="lang" href="../" hreflang="tr" lang="tr">Türkçe</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Make Enemies Easier to See<br><span>Digital Vibrance & FPS Boost for CS2 and VALORANT</span></h1>
+      <p>Per-game digital vibrance, brightness and gamma that work on <strong>NVIDIA, AMD, Intel and laptops</strong> and don't reset on Alt+Tab. Plus a safe, one-click reversible FPS boost tuned to your PC, and the current settings of 200+ pro players. Free.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/DoGood-Studio/game-color-guard/releases/latest/download/GameColorGuard.exe">⬇ Download for Windows</a>
+        <a class="btn secondary" href="https://github.com/DoGood-Studio/game-color-guard">Source Code (GitHub)</a>
+      </div>
+      <div class="meta">Windows 10 / 11 · Single File, No Install · Version 3.2 · 7 Languages · DoGood Studio · <a href="https://github.com/DoGood-Studio/game-color-guard/releases">All Releases</a> · <a href="https://www.virustotal.com/gui/file/bb9d9c611562c7046f7c98d6d7e220017330859a73fc3d4e2aca7364f4280a1a/detection" rel="noopener">VirusTotal 0/68 Clean</a></div>
+    </section>
+
+    <section id="before-after">
+      <h2>Before / After</h2>
+      <p class="lead">Real in-game screenshots. Drag the slider: the right side is the app's color math (Windows color matrix + gamma ramp) with its recommended profile of brightness 55, contrast 55, gamma 1.10 and vibrance 85. Players waiting in the shadows and dark corners stand out.</p>
+      <div class="tabs" role="tablist">
+        <button class="on" data-game="cs2" role="tab" aria-selected="true">Counter-Strike 2</button>
+        <button data-game="valorant" role="tab" aria-selected="false">VALORANT</button>
+      </div>
+      <div class="compare" id="compare">
+        <img id="beforeImg" src="../cs2-once.jpg" alt="CS2 before digital vibrance: dark, shadowed passage" width="1280" height="720">
+        <img id="afterImg" class="after" src="../cs2-sonra.jpg" alt="CS2 after Game Color Guard: brighter shadows, more vibrant colors" width="1280" height="720">
+        <span class="tag l">Before</span><span class="tag r">After</span>
+        <div class="handle"></div>
+        <input type="range" min="0" max="100" value="50" aria-label="Before and after comparison slider">
+      </div>
+      <p class="note">Images: Counter-Strike 2 — Valve's Steam store image; VALORANT — in-game image from Riot Games' official VALORANT Asset Kit. The "after" side is produced with the same math the app applies to your screen; your result depends on your monitor and profile.</p>
+    </section>
+
+    <section id="features">
+      <h2>Features</h2>
+      <p class="lead">Everything in one window, five tabs.</p>
+      <div class="grid">
+        <div class="card"><div class="ico">🎨</div><h3>Digital Vibrance on Any GPU</h3><p>Brightness, contrast, gamma, vibrance (saturation), hue and RGB per game. Uses the Windows color engine, so it works on NVIDIA, AMD and Intel, even on hybrid-graphics laptops where the driver setting has no effect. An alternative to VibranceGUI.</p></div>
+        <div class="card"><div class="ico">🔁</div><h3>Doesn't Reset on Alt+Tab</h3><p>The profile stays while the game is on screen and is removed when you minimize it or another window covers it. Your desktop, browser and videos keep their normal colors.</p></div>
+        <div class="card"><div class="ico">⚡</div><h3>Safe FPS Boost</h3><p>Detects laptop or desktop, plugged in or on battery, hybrid GPU and monitor Hz, then recommends safe Windows settings: animations, Game DVR, Game Mode, power mode, game priority, highest refresh rate, high-performance GPU.</p></div>
+        <div class="card"><div class="ico">🧹</div><h3>Background App Cleaner</h3><p>Lists running apps by CPU and RAM use. Games, anti-cheat and drivers are protected; only the apps you select are closed.</p></div>
+        <div class="card"><div class="ico">🏆</div><h3>Pro Player Settings</h3><p>201 pros from 37 top teams (19 CS2, 18 VALORANT). Sensitivity converted to your DPI, one-click CS2 config, copy VALORANT crosshair codes.</p></div>
+        <div class="card"><div class="ico">🖥️</div><h3>System Report</h3><p>Single or dual-channel RAM and XMP, CPU power/thermal limits, SSD or HDD, GPU driver age, monitor Hz, Memory Integrity. Tells you what is holding your FPS back.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Screenshots</h2>
+      <div class="shots">
+        <figure><img src="color.png" alt="Color profile page: tone curve, brightness, contrast, gamma and digital vibrance" loading="lazy" width="1160" height="800"><figcaption>Color Profile</figcaption></figure>
+        <figure><img src="fps-boost.png" alt="FPS Boost page: safe Windows settings recommended for your PC" loading="lazy" width="1160" height="800"><figcaption>FPS Boost</figcaption></figure>
+        <figure><img src="background-apps.png" alt="Background apps page: running apps listed by CPU and RAM use" loading="lazy" width="1160" height="800"><figcaption>Background App Cleaner</figcaption></figure>
+        <figure><img src="system.png" alt="System page: RAM, CPU, graphics card and advice" loading="lazy" width="1160" height="800"><figcaption>System Report</figcaption></figure>
+      </div>
+      <p class="note">The app is available in English, Türkçe, Русский, العربية, Deutsch, Español and Português. It is stripped of unnecessary animations and elements so it uses as little RAM as possible in the background (about 33 MB in the tray).</p>
+    </section>
+
+    <section id="safety">
+      <h2>It Won't Break Your PC</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>What It Does</h3>
+          <ul class="check">
+            <li>User-level settings only; no admin rights</li>
+            <li>Saves every setting's previous value and restores it exactly with one click</li>
+            <li>Touches nothing if Windows is already set the way it should be</li>
+            <li>Writes CS2 configs as a new file and never touches yours</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What It Deliberately Doesn't Do</h3>
+          <ul class="check cross">
+            <li>Disable Windows services or apply "magic" bcdedit/HPET tweaks</li>
+            <li>Turn off Memory Integrity / VBS (a security feature)</li>
+            <li>Touch game memory (VAC, Vanguard, FACEIT)</li>
+            <li>Unproven "RAM cleaner" and timer tweaks</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <h2>FAQ</h2>
+      <details><summary>Will I get banned (VAC, Vanguard, FACEIT)?</summary><p>The app never reads or writes game memory and never injects into the game. Colors are changed through Windows' own gamma ramp and color matrix, the same level as the NVIDIA Control Panel or Windows color filters. We can't speak for anti-cheat vendors, but nothing in the app touches the game itself.</p></details>
+      <details><summary>Does digital vibrance work on AMD and Intel graphics?</summary><p>Yes. Vibrance is applied by the Windows color engine, independent of your graphics card. The color layer is visible in borderless (windowed fullscreen) mode, not in exclusive fullscreen.</p></details>
+      <details><summary>What is the best digital vibrance setting for CS2?</summary><p>Most guides suggest 60–80% in the NVIDIA Control Panel, and some top players keep the default. The app's "Recommended settings" button applies brightness 55, contrast 55, gamma 1.10 and vibrance 85 (50 is neutral); tune it on your own monitor with the 10-second live preview.</p></details>
+      <details><summary>How do I make VALORANT more vibrant or brighter?</summary><p>Raise vibrance (NVIDIA: Digital Vibrance, AMD: Saturation) and slightly raise brightness or gamma. Game Color Guard does this per game on any GPU and only while VALORANT is on screen. Set VALORANT to windowed fullscreen.</p></details>
+      <details><summary>How do I increase FPS in CS2 and VALORANT?</summary><p>Start with the in-game settings (the app includes CS2, VALORANT and NVIDIA guides), then apply the recommended FPS Boost settings and close background apps. The biggest gains usually come from plugging in a laptop, moving from single to dual-channel RAM and running your monitor at its highest Hz; the System page checks these on your PC. We don't promise a fixed number.</p></details>
+      <details><summary>Does digital vibrance increase FPS?</summary><p>No. Vibrance is visual only; it helps you see, not render faster. FPS gains come from the separate FPS Boost page.</p></details>
+      <details><summary>Is it free?</summary><p>Yes. Under the PolyForm Noncommercial license you can use, modify and share it for non-commercial purposes; it may not be sold.</p></details>
+      <details><summary>Windows shows a SmartScreen warning?</summary><p>The exe is not code-signed, so it may appear on first launch: "More info" › "Run anyway". The source code is on GitHub and the exe is <a href="https://www.virustotal.com/gui/file/bb9d9c611562c7046f7c98d6d7e220017330859a73fc3d4e2aca7364f4280a1a/detection" rel="noopener">clean on VirusTotal (0/68)</a>.</p></details>
+    </section>
+  </main>
+
+  <footer>
+    Made by <strong>DoGood Studio</strong> · <a href="https://github.com/DoGood-Studio/game-color-guard/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a> ·
+    Pro settings data: <a href="https://prosettings.net" rel="nofollow">prosettings.net</a> · <a href="../" hreflang="tr" lang="tr">Türkçe</a>.
+    This project is not affiliated with Valve, Riot Games, NVIDIA, AMD, Intel or prosettings.net. Counter-Strike 2 and Steam are trademarks of Valve Corporation.<br>
+    Game Color Guard isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+  </footer>
+</div>
+<script>
+  // Before/after slider: mirrors the input value into a CSS variable (works with keyboard and touch).
+  const compare = document.getElementById('compare');
+  const range = compare.querySelector('input');
+  const update = () => compare.style.setProperty('--pos', range.value + '%');
+  range.addEventListener('input', update);
+  update();
+  // CS2 / VALORANT tabs: swap the images in the same slider.
+  const sets = {
+    cs2: ['../cs2-once.jpg', '../cs2-sonra.jpg', 'CS2 before digital vibrance', 'CS2 after Game Color Guard'],
+    valorant: ['../valorant-once.jpg', '../valorant-sonra.jpg', 'VALORANT before digital vibrance', 'VALORANT after Game Color Guard']
+  };
+  document.querySelectorAll('.tabs button').forEach(button => button.addEventListener('click', () => {
+    const [before, after, beforeAlt, afterAlt] = sets[button.dataset.game];
+    const b = document.getElementById('beforeImg'), a = document.getElementById('afterImg');
+    b.src = before; b.alt = beforeAlt; a.src = after; a.alt = afterAlt;
+    document.querySelectorAll('.tabs button').forEach(x => { x.classList.toggle('on', x === button); x.setAttribute('aria-selected', x === button); });
+  }));
+</script>
+</body>
+</html>

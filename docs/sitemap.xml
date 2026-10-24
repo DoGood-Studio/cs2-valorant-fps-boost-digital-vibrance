@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://dogood-studio.github.io/game-color-guard/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://dogood-studio.github.io/game-color-guard/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dogood-studio.github.io/game-color-guard/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dogood-studio.github.io/game-color-guard/en/"/>
+  </url>
+  <url>
+    <loc>https://dogood-studio.github.io/game-color-guard/en/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://dogood-studio.github.io/game-color-guard/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dogood-studio.github.io/game-color-guard/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dogood-studio.github.io/game-color-guard/en/"/>
   </url>
 </urlset>
