@@ -44,6 +44,8 @@ Arka planda RAM kullanmaması için gereksiz animasyon ve öğelerden arındır�
 
 [Releases](../../releases) sayfasından `GameColorGuard.exe` dosyasını indirip çalıştırın (tek dosya, .NET kurulumu gerekmez). Exe imzalı olmadığı için ilk açılışta SmartScreen uyarısı çıkabilir.
 
+Güvenlik taraması: v3.2 exe'si [VirusTotal'da 0/68](https://www.virustotal.com/gui/file/bb9d9c611562c7046f7c98d6d7e220017330859a73fc3d4e2aca7364f4280a1a/detection), hiçbir antivirüs zararlı bulmadı (24 Ekim 2026).
+
 ### Kaynaktan Derleme
 
 .NET 10 SDK gerekir:
