@@ -40,7 +40,7 @@ FPS ve görünürlük için **CS2 en iyi ayarlar**, **Valorant en iyi ayarlar** 
 
 Salt okunur kontrol ve öneriler: RAM tek/çift kanal, RAM hızı ve XMP, işlemcinin güç/ısı sınırı, P/E çekirdek, oyun diski (SSD/HDD), GPU sürücüsünün yaşı, ekran Hz, Bellek bütünlüğü ve HAGS.
 
-**7 dil:** Türkçe, English, Русский, العربية, Deutsch, Español, Português. Dil, Ayarlar kartındaki seçiciden yeniden başlatmadan değişir; ilk açılışta Windows dili kullanılır.
+**7 dil:** Türkçe, English, Русский, العربية, Deutsch, Español, Português. Program ilk açılışta İngilizce başlar; dili Ayarlar kartındaki seçiciden yeniden başlatmadan değiştirebilirsiniz.
 
 **Hafif:** Arka planda RAM kullanmaması için gereksiz animasyon ve öğelerden arındırılmıştır (Windows 11'de tepsideyken yaklaşık 33 MB çalışma kümesi).
 

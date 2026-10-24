@@ -35,7 +35,7 @@ internal sealed class ColorSettings
     public PerformanceSettings Performance { get; set; } = new();
     /// <summary>Pro ayar sayfasında hassasiyet dönüşümü için kullanıcının fare DPI'ı.</summary>
     public int MouseDpi { get; set; } = 800;
-    /// <summary>Arayüz dili (tr, en, ru, ar, de, es, pt); boşsa Windows dilinden seçilir.</summary>
+    /// <summary>Arayüz dili (tr, en, ru, ar, de, es, pt); yeni kurulum İngilizce başlar.</summary>
     public string? Language { get; set; }
 
     // Önceki sürümle aynı klasör: kullanıcının kayıtlı profili aynen korunur.
@@ -61,6 +61,8 @@ internal sealed class ColorSettings
     {
         if (!File.Exists(path)) return new ColorSettings();
         ColorSettings settings = JsonSerializer.Deserialize<ColorSettings>(File.ReadAllText(path)) ?? new ColorSettings();
+        // Dil seçimi olmayan eski ayar dosyası: program o güne kadar Windows diliyle açılıyordu, öyle kalsın.
+        settings.Language ??= Loc.LegacyDefault();
         settings.Normalize();
         return settings;
     }

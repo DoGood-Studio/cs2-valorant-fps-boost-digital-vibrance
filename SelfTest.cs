@@ -117,6 +117,7 @@ internal static class SelfTest
         }
 
         report.AppendLine();
+        failures += CheckLanguageDefault(report);
         failures += CheckLanguages(report);
 
         report.Insert(0, $"Game Color Guard öz-test · {DateTime.Now:yyyy-MM-dd HH:mm:ss} · {failures} hata{Environment.NewLine}");
@@ -128,10 +129,38 @@ internal static class SelfTest
     internal static int RunLanguages(string path)
     {
         var report = new StringBuilder();
-        int failures = CheckLanguages(report);
+        int failures = CheckLanguageDefault(report) + CheckLanguages(report);
         report.Insert(0, $"Game Color Guard dil testi · {DateTime.Now:yyyy-MM-dd HH:mm:ss} · {failures} hata{Environment.NewLine}");
         File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
         return failures == 0 ? 0 : 1;
+    }
+
+    /// <summary>
+    /// Dil varsayılanı, gerçek ayar dosyasına dokunmadan geçici dosyalarla: yeni kurulum İngilizce başlar, dil seçimi
+    /// olmayan eski ayar dosyası Windows diliyle kalır, kullanıcının seçtiği dil korunur.
+    /// </summary>
+    private static int CheckLanguageDefault(StringBuilder report)
+    {
+        string temp = Path.Combine(Path.GetTempPath(), "gcg-dil-" + Guid.NewGuid().ToString("N") + ".json");
+        try
+        {
+            bool freshUnset = ColorSettings.LoadFrom(temp).Language is null;   // dosya yok: ilk açılış
+            Loc.Init(null);
+            bool freshEnglish = Loc.Language == "en";
+            File.WriteAllText(temp, "{\"Brightness\": 60}");
+            bool legacyKept = ColorSettings.LoadFrom(temp).Language == Loc.LegacyDefault();
+            File.WriteAllText(temp, "{\"Language\": \"de\"}");
+            bool chosenKept = ColorSettings.LoadFrom(temp).Language == "de";
+            bool ok = freshUnset && freshEnglish && legacyKept && chosenKept;
+            report.AppendLine($"{(ok ? "OK  " : "HATA")} Dil varsayılanı: yeni kurulum {(freshEnglish ? "İngilizce" : Loc.Language)}, " +
+                              $"dil seçmemiş eski kurulum {Loc.LegacyDefault()} ile kalıyor, seçilen dil korunuyor ({legacyKept}/{chosenKept})");
+            return ok ? 0 : 1;
+        }
+        finally
+        {
+            try { File.Delete(temp); } catch { }
+            Loc.Set("tr");
+        }
     }
 
     // Yalnız Türkçede bulunan harfler (ç/ö/ü Almanca ve Portekizcede de var).

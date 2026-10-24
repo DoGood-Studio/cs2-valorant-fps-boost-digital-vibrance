@@ -97,6 +97,13 @@ public partial class MainWindow : Window
         _nvidiaColor = new NvidiaColorControl(_settings.DigitalVibrance, _settings.Hue, leftoverSuspected);
 
         Loc.Init(_settings.Language);
+        if (_settings.Language is null && !testMode)
+        {
+            // İlk açılış: İngilizce başlar ve kaydedilir; sonraki açılışlar kullanıcının seçtiği dille sürer.
+            _settings.Language = Loc.Language;
+            try { _settings.Save(); }
+            catch (Exception ex) { AppLogger.Write("Ayarlar kaydedilemedi", ex); }
+        }
         InitializeComponent();
         FitToWorkArea();
         BuildLanguagePicker();

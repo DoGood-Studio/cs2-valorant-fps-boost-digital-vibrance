@@ -40,7 +40,7 @@ Lists running apps by CPU and RAM use. Only the apps you select are closed; game
 
 Read-only check with advice: single or dual-channel RAM, RAM speed and XMP, CPU power and thermal limits, P/E cores, game drive (SSD or HDD), GPU driver age, monitor Hz, Memory Integrity and HAGS.
 
-**7 languages:** English, Türkçe, Русский, العربية, Deutsch, Español, Português. Switch live from the Settings card; the first launch follows your Windows language.
+**7 languages:** English, Türkçe, Русский, العربية, Deutsch, Español, Português. The app starts in English; switch live from the Settings card, no restart needed.
 
 **Lightweight:** stripped of unnecessary animations and elements so it uses as little RAM as possible in the background (about 33 MB working set in the tray on Windows 11).
 

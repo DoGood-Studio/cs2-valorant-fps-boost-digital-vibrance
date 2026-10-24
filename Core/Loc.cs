@@ -49,12 +49,15 @@ internal static class Loc
         "en" => "en-US", "ru" => "ru-RU", "ar" => "ar-AE", "de" => "de-DE", "es" => "es-ES", "pt" => "pt-BR", _ => "tr-TR"
     });
 
-    /// <summary>Kayıtlı dil; yoksa Windows arayüz dili (destekleniyorsa), o da yoksa İngilizce.</summary>
-    public static void Init(string? preferred)
-    {
-        string? Supported(string? code) => Languages.Any(l => l.Code == code) ? code : null;
-        Set(Supported(preferred?.ToLowerInvariant()) ?? Supported(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) ?? "en");
-    }
+    /// <summary>Kayıtlı dil; yoksa (ilk açılış) İngilizce.</summary>
+    public static void Init(string? preferred) => Set(Supported(preferred?.ToLowerInvariant()) ?? "en");
+
+    /// <summary>
+    /// Dil seçimi kaydedilmemiş eski kurulumlar Windows diliyle açılıyordu; aynı dilde kalsınlar diye o dil kaydedilir.
+    /// </summary>
+    public static string LegacyDefault() => Supported(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) ?? "en";
+
+    private static string? Supported(string? code) => Languages.Any(l => l.Code == code) ? code : null;
 
     public static void Set(string code)
     {
