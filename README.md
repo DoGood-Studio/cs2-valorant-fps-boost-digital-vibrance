@@ -2,7 +2,7 @@
 
 **Free Windows app for CS2 and VALORANT.** Boost FPS safely and make enemies easier to see with per-game **digital vibrance**, brightness, contrast and gamma. Color settings **without NVIDIA**: works on **AMD, Intel and laptops**, and doesn't reset on Alt+Tab. Also includes a background app cleaner and the settings of **200+ pro players**.
 
-**[⬇ Download for Windows (free)](https://github.com/DoGood-Studio/game-color-guard/releases/latest/download/GameColorGuard.exe)** · [Website](https://dogood-studio.github.io/game-color-guard/en/) · [Türkçe](README.tr.md) · [VirusTotal 0/68](https://www.virustotal.com/gui/file/44f1c18d64491ca456e00fa05787360944def541aaa19cc8a85c10cf8d57fffc/detection)
+**[⬇ Download for Windows (free)](https://github.com/DoGood-Studio/cs2-valorant-fps-boost-digital-vibrance/releases/latest/download/GameColorGuard.exe)** · [Website](https://dogood-studio.github.io/cs2-valorant-fps-boost-digital-vibrance/en/) · [Türkçe](README.tr.md) · [VirusTotal 0/68](https://www.virustotal.com/gui/file/44f1c18d64491ca456e00fa05787360944def541aaa19cc8a85c10cf8d57fffc/detection)
 
 **Before / after on real in-game screenshots.** Right side: brightness 55, contrast 55, gamma 1.10, vibrance 85.
 
@@ -94,7 +94,7 @@ Download `GameColorGuard.exe` from [Releases](../../releases) and run it. Single
 **Build provenance:** Releases are built on GitHub's servers from this repository's source and come with a build provenance attestation (since v3.2.1). Verify that your exe was built from this repository:
 
 ```
-gh attestation verify GameColorGuard.exe --repo DoGood-Studio/game-color-guard
+gh attestation verify GameColorGuard.exe --owner DoGood-Studio
 ```
 
 ## Build From Source

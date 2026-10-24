@@ -2,7 +2,7 @@
 
 **CS2 ve Valorant için ücretsiz FPS arttırma programı.** Oyuna özel **canlı renk ayarları** (canlılık / Digital Vibrance, parlaklık, kontrast, gama) ile düşmanları daha net görün. **NVIDIA olmadan da** çalışır: **AMD, Intel ve laptop**'ta. Alt+Tab'da sıfırlanmaz. Arka plan temizliği ve **200+ pro oyuncunun ayarları** da içinde.
 
-**[⬇ Windows İçin Ücretsiz İndir](https://github.com/DoGood-Studio/game-color-guard/releases/latest/download/GameColorGuard.exe)** · [Tanıtım Sayfası](https://dogood-studio.github.io/game-color-guard/) · [English](README.md) · [VirusTotal 0/68](https://www.virustotal.com/gui/file/44f1c18d64491ca456e00fa05787360944def541aaa19cc8a85c10cf8d57fffc/detection)
+**[⬇ Windows İçin Ücretsiz İndir](https://github.com/DoGood-Studio/cs2-valorant-fps-boost-digital-vibrance/releases/latest/download/GameColorGuard.exe)** · [Tanıtım Sayfası](https://dogood-studio.github.io/cs2-valorant-fps-boost-digital-vibrance/) · [English](README.md) · [VirusTotal 0/68](https://www.virustotal.com/gui/file/44f1c18d64491ca456e00fa05787360944def541aaa19cc8a85c10cf8d57fffc/detection)
 
 **Gerçek oyun görüntülerinde önce / sonra.** Sağ taraf: aydınlık 55, kontrast 55, gama 1,10, canlılık 85.
 
@@ -91,7 +91,7 @@ Exe dijital imzalı olmadığı için ilk açılışta çıkabilir: **Ek bilgi �
 **Derleme kanıtı:** Sürümler bu depodaki koddan GitHub'ın sunucusunda derlenir ve derleme kanıtıyla yayınlanır (v3.2.1'den itibaren). İndirdiğiniz exe'nin bu depodaki koddan üretildiğini doğrulamak için:
 
 ```
-gh attestation verify GameColorGuard.exe --repo DoGood-Studio/game-color-guard
+gh attestation verify GameColorGuard.exe --owner DoGood-Studio
 ```
 
 Kaynaktan derleme ve test modları için İngilizce [README](README.md#build-from-source)'ye bakın.

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dogood-studio.github.io/game-color-guard/sitemap.xml
+Sitemap: https://dogood-studio.github.io/cs2-valorant-fps-boost-digital-vibrance/sitemap.xml
