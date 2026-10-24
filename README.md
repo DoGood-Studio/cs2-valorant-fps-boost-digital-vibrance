@@ -2,7 +2,7 @@
 
 **Free Windows app for CS2 and VALORANT.** Boost FPS safely and make enemies easier to see with per-game **digital vibrance**, brightness, contrast and gamma. Color settings **without NVIDIA**: works on **AMD, Intel and laptops**, and doesn't reset on Alt+Tab. Also includes a background app cleaner and the settings of **200+ pro players**.
 
-**[⬇ Download for Windows (free)](https://github.com/DoGood-Studio/game-color-guard/releases/latest/download/GameColorGuard.exe)** · [Website](https://dogood-studio.github.io/game-color-guard/en/) · [Türkçe](README.tr.md) · [VirusTotal 0/68](https://www.virustotal.com/gui/file/bb9d9c611562c7046f7c98d6d7e220017330859a73fc3d4e2aca7364f4280a1a/detection)
+**[⬇ Download for Windows (free)](https://github.com/DoGood-Studio/game-color-guard/releases/latest/download/GameColorGuard.exe)** · [Website](https://dogood-studio.github.io/game-color-guard/en/) · [Türkçe](README.tr.md) · [VirusTotal 0/68](https://www.virustotal.com/gui/file/44f1c18d64491ca456e00fa05787360944def541aaa19cc8a85c10cf8d57fffc/detection)
 
 **Before / after on real in-game screenshots.** Right side: brightness 55, contrast 55, gamma 1.10, vibrance 85.
 
@@ -85,13 +85,13 @@ No, it is visual only. FPS gains come from the separate FPS Boost page.
 Use **borderless / windowed fullscreen**. The color layer is not visible in exclusive fullscreen. Gamma works in both.
 
 **Windows shows a SmartScreen warning.**
-The exe is not code-signed. Click **More info › Run anyway**. The full source code is in this repository and the exe is clean on [VirusTotal (0/68)](https://www.virustotal.com/gui/file/bb9d9c611562c7046f7c98d6d7e220017330859a73fc3d4e2aca7364f4280a1a/detection).
+The exe is not code-signed. Click **More info › Run anyway**. The full source code is in this repository, the exe is built on GitHub with a verifiable build provenance attestation, and it is clean on [VirusTotal (0/68)](https://www.virustotal.com/gui/file/44f1c18d64491ca456e00fa05787360944def541aaa19cc8a85c10cf8d57fffc/detection).
 
 ## Download
 
 Download `GameColorGuard.exe` from [Releases](../../releases) and run it. Single file, no installer, no .NET needed (Windows 10/11, 64-bit).
 
-**Build provenance:** From the next release on, releases are built on GitHub's servers with a build provenance attestation; v3.2 was built locally and has none. For an attested release you can verify that the exe was built from this repository:
+**Build provenance:** Releases are built on GitHub's servers from this repository's source and come with a build provenance attestation (since v3.2.1). Verify that your exe was built from this repository:
 
 ```
 gh attestation verify GameColorGuard.exe --repo DoGood-Studio/game-color-guard
