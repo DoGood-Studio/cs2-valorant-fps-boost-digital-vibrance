@@ -1,0 +1,47 @@
+# GitHub'ın sunucusunda derler ve derleme kanıtı (build provenance attestation) üretir.
+# Böylece yayınlanan exe'nin tam olarak bu depodaki koddan üretildiği doğrulanabilir;
+# kimse `gh attestation verify` ile dosyaya gizli bir şey eklenmediğini kontrol edebilir.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:   # Elle de çalıştırılabilir (yalnız derler ve kanıt üretir, sürüme yüklemez)
+
+permissions:
+  contents: write      # Etiketli çalışmada exe'yi sürüme yüklemek için
+  id-token: write      # Kanıtın imzalanması için
+  attestations: write  # Derleme kanıtını yazmak için
+
+jobs:
+  build:
+    runs-on: windows-latest   # WPF yalnız Windows'ta derlenir
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # build.cmd ile aynı yayınlama ayarları (tek dosya, sıkıştırmasız).
+      - name: Yayınla
+        run: >
+          dotnet publish GameColorGuard.csproj -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=false -p:DebugType=none -o publish -nologo
+
+      - name: SHA-256
+        run: Get-FileHash publish/GameColorGuard.exe -Algorithm SHA256
+
+      # Bu exe'nin bu depodaki şu çalışmadan üretildiğine dair doğrulanabilir kanıt.
+      - name: Derleme kanıtı
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: publish/GameColorGuard.exe
+
+      # Etiket gönderildiğinde (v3.3, v3.4 …) exe'yi o sürüme yükler.
+      - name: Sürüme yükle
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload ${{ github.ref_name }} publish/GameColorGuard.exe --clobber
