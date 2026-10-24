@@ -52,7 +52,7 @@
                     <TextBlock Text="Game Color Guard" Margin="12,0,0,0" FontSize="14" FontWeight="SemiBold"
                                FontFamily="{StaticResource DisplayFont}" VerticalAlignment="Center"/>
                     <Border Style="{StaticResource Chip}" Margin="10,0,0,0" Padding="7,2" VerticalAlignment="Center">
-                        <TextBlock Text="v3.1" FontSize="11" Foreground="{StaticResource Text2Brush}"/>
+                        <TextBlock Text="v3.2" FontSize="11" Foreground="{StaticResource Text2Brush}"/>
                     </Border>
                 </StackPanel>
                 <!-- Sayfa sekmeleri -->
@@ -329,7 +329,7 @@
                         <TextBlock Text="Geliştirici" FontSize="11.5" Foreground="{StaticResource Text3Brush}"/>
                         <TextBlock Text="DoGood Studio" FontSize="11.5" FontWeight="SemiBold" Margin="5,0,0,0"
                                    Foreground="{StaticResource Ember300Brush}"/>
-                        <TextBlock Text="· v3.1" FontSize="11.5" Margin="5,0,0,0" Foreground="{StaticResource Text3Brush}"/>
+                        <TextBlock Text="· v3.2" FontSize="11.5" Margin="5,0,0,0" Foreground="{StaticResource Text3Brush}"/>
                     </StackPanel>
                     <TextBlock Text="Arka planda RAM kullanmaması için gereksiz animasyon ve öğelerden arındırılmıştır." FontSize="10.5" Margin="8,4,8,0" TextAlignment="Center"
                                TextWrapping="Wrap" Foreground="{StaticResource Text3Brush}"/>

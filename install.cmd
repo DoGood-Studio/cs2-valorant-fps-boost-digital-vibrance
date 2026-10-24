@@ -8,7 +8,7 @@ if not exist "eski-surum" mkdir "eski-surum"
 if exist "%DST%\GameColorGuard.old.exe" if not exist "eski-surum\GameColorGuard.old.exe" copy /y "%DST%\GameColorGuard.old.exe" "eski-surum\" >> install.log 2>&1
 if exist "%DST%\KULLANIM.txt" copy /y "%DST%\KULLANIM.txt" "eski-surum\" >> install.log 2>&1
 
-echo Game Color Guard 3.1 derleniyor...
+echo Game Color Guard 3.2 derleniyor...
 call "%~dp0build.cmd"
 findstr /c:"EXIT=0" build.log > nul
 if errorlevel 1 (

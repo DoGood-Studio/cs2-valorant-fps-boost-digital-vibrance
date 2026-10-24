@@ -127,7 +127,7 @@ internal static class ImageCache
     {
         var client = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
         // Cloudflare, tarayıcı biçiminde olmayan istemcileri doğrulama sayfasına yönlendiriyor (403); uygulama adı yine de görünür.
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) GameColorGuard/3.1");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) GameColorGuard/3.2");
         return client;
     }
 }
