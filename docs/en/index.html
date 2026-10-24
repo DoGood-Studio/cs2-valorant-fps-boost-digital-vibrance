@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Digital Vibrance & FPS Boost for CS2 and VALORANT (NVIDIA, AMD, Intel) — Game Color Guard</title>
-<meta name="description" content="Free Windows app that makes enemies easier to see: per-game digital vibrance for CS2 and VALORANT on NVIDIA, AMD and Intel, plus a safe FPS boost.">
-<meta name="keywords" content="digital vibrance CS2, best digital vibrance settings, VALORANT digital vibrance, make VALORANT more vibrant, digital vibrance AMD, digital vibrance Intel laptop, VibranceGUI alternative, CS2 FPS boost, increase FPS VALORANT, CS2 gamma, CS2 pro settings, VALORANT crosshair codes">
+<title>Free FPS Booster &amp; Digital Vibrance for CS2 and VALORANT (AMD, Intel, Laptop) — Game Color Guard</title>
+<meta name="description" content="Free FPS booster and digital vibrance for CS2 and VALORANT. Color settings without NVIDIA: works on AMD, Intel and laptops. Safe, reversible tweaks.">
+<meta name="keywords" content="cs2 fps boost, valorant fps boost, fps booster pc free, digital vibrance, digital vibrance amd, digital vibrance laptop, cs2 color settings without nvidia, valorant color settings without nvidia, cs2 color settings amd, valorant color settings intel, vibrancegui not working, how to make valorant more colorful, cs2 best settings for fps and visibility, valorant best settings for visibility, cs2 launch options, cs2 pro settings, valorant crosshair codes">
 <meta name="author" content="DoGood Studio">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://dogood-studio.github.io/game-color-guard/en/">
@@ -16,16 +16,16 @@
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Game Color Guard">
-<meta property="og:title" content="Game Color Guard — Digital Vibrance & FPS Boost for CS2 and VALORANT">
-<meta property="og:description" content="Make enemies easier to see. Per-game digital vibrance on any GPU (NVIDIA, AMD, Intel), safe and reversible FPS boost, 200+ pro player settings. Free.">
+<meta property="og:title" content="Game Color Guard — Free FPS Booster &amp; Digital Vibrance for CS2 and VALORANT">
+<meta property="og:description" content="Make enemies easier to see. Color settings without NVIDIA on AMD, Intel and laptops, a safe FPS boost and 200+ pro player settings. Free.">
 <meta property="og:url" content="https://dogood-studio.github.io/game-color-guard/en/">
-<meta property="og:image" content="https://dogood-studio.github.io/game-color-guard/cs2-once-sonra.jpg">
+<meta property="og:image" content="https://dogood-studio.github.io/game-color-guard/en/cs2-digital-vibrance-before-after.jpg">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Game Color Guard — Digital Vibrance & FPS Boost for CS2 / VALORANT">
-<meta name="twitter:description" content="Digital vibrance on any GPU, safe FPS boost and pro settings in one free app.">
-<meta name="twitter:image" content="https://dogood-studio.github.io/game-color-guard/cs2-once-sonra.jpg">
+<meta name="twitter:title" content="Free FPS Booster &amp; Digital Vibrance for CS2 / VALORANT">
+<meta name="twitter:description" content="Color settings without NVIDIA (AMD, Intel, laptop), safe FPS boost and pro settings in one free app.">
+<meta name="twitter:image" content="https://dogood-studio.github.io/game-color-guard/en/cs2-digital-vibrance-before-after.jpg">
 
 <script type="application/ld+json">
 {
@@ -35,7 +35,7 @@
   "operatingSystem": "Windows 10, Windows 11",
   "applicationCategory": "GameApplication",
   "softwareVersion": "3.2.0",
-  "description": "Free Windows app for CS2 and VALORANT: per-game digital vibrance, brightness, contrast and gamma on NVIDIA, AMD and Intel GPUs, a safe and reversible FPS boost, a background app cleaner and 200+ pro player settings.",
+  "description": "Free FPS booster and digital vibrance for CS2 and VALORANT: per-game color settings without NVIDIA on AMD, Intel and laptops, a safe and reversible FPS boost, a background app cleaner and 200+ pro player settings.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": { "@type": "Organization", "name": "DoGood Studio" },
   "license": "https://polyformproject.org/licenses/noncommercial/1.0.0",
@@ -49,16 +49,94 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "Will I get banned (VAC, Vanguard, FACEIT)?",
-      "acceptedAnswer": { "@type": "Answer", "text": "The app never reads or writes game memory and never injects into the game. It only changes Windows display and system settings, the same level as the NVIDIA or AMD control panel." } },
-    { "@type": "Question", "name": "Does digital vibrance work on AMD and Intel graphics?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Game Color Guard applies colors through the Windows color engine instead of the graphics driver, so it works on NVIDIA, AMD and Intel GPUs, including laptops with hybrid graphics." } },
-    { "@type": "Question", "name": "What is the best digital vibrance setting for CS2?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Most guides suggest 60–80% in the NVIDIA Control Panel, and some top players keep the default. Game Color Guard starts from a recommended profile you can fine-tune with a live preview." } },
-    { "@type": "Question", "name": "How do I make VALORANT more vibrant?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Raise vibrance (NVIDIA: Digital Vibrance, AMD: Saturation) and slightly raise brightness or gamma. Game Color Guard does this per game on any GPU, only while VALORANT is on screen. Use windowed fullscreen." } },
-    { "@type": "Question", "name": "Does digital vibrance increase FPS?",
-      "acceptedAnswer": { "@type": "Answer", "text": "No. Vibrance is visual only. FPS gains come from the separate FPS Boost page, which reduces background load and sets Windows options for games." } }
+    {
+      "@type": "Question",
+      "name": "Will I get banned (VAC, Vanguard, FACEIT)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The app never reads or writes game memory and never injects into the game. Colors are changed through Windows' own gamma ramp and color matrix, the same level as the NVIDIA Control Panel or Windows color filters. We can't speak for anti-cheat vendors, but nothing in the app touches the game itself."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the AMD equivalent of digital vibrance? Does it work on AMD?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On AMD it is called Saturation (Radeon Adrenalin). Game Color Guard works on AMD directly: vibrance is applied by the Windows color engine, so no driver setting is needed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use digital vibrance on a laptop or with Intel graphics?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Because Windows applies the colors, it works with Intel integrated graphics and on hybrid-graphics laptops, including the built-in screen. The color layer is visible in borderless (windowed fullscreen) mode, not in exclusive fullscreen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "VibranceGUI is not working on my laptop, AMD or Intel PC. What can I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Game Color Guard does not depend on the graphics driver, so it works where driver-based tools can't reach the screen. Run your game in borderless / windowed fullscreen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I make VALORANT more colorful or vibrant?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Raise vibrance (NVIDIA: Digital Vibrance, AMD: Saturation) and slightly raise brightness or gamma. Game Color Guard does this per game on any GPU and only while VALORANT is on screen. Set VALORANT to windowed fullscreen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the best digital vibrance for CS2 and VALORANT?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most guides suggest 60–80% in the NVIDIA Control Panel, and some top players keep the default. The app's \"Recommended settings\" button applies brightness 55, contrast 55, gamma 1.10 and vibrance 85 (50 is neutral); tune it on your own monitor with the 10-second live preview."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the best CS2 settings for FPS and visibility?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keep Boost Player Contrast on and Global Shadow Quality at Medium or higher (on Low you can't see enemy shadows); lower shader, texture and particle detail; NVIDIA Reflex on and V-Sync off. The app's CS2 guide lists these with the reasons, and copies CS2 launch options in one click."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I boost FPS and fix FPS drops in CS2 and VALORANT?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Apply the recommended FPS Boost settings and close heavy background apps. The biggest gains usually come from plugging in a laptop, moving from single to dual-channel RAM and running your monitor at its highest Hz; the System page checks these on your PC. We don't promise a fixed FPS number."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does digital vibrance increase FPS?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Vibrance is visual only; it helps you see, not render faster. FPS gains come from the separate FPS Boost page."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Under the PolyForm Noncommercial license you can use, modify and share it for non-commercial purposes; it may not be sold."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Windows shows a SmartScreen warning?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The exe is not code-signed, so it may appear on first launch: \"More info\" › \"Run anyway\". The source code is on GitHub and the exe is clean on VirusTotal (0/68)."
+      }
+    }
   ]
 }
 </script>
@@ -111,6 +189,8 @@
   .tabs button { font: inherit; font-size: 14px; font-weight: 600; color: var(--text2); background: transparent; border: 0; border-radius: 9px; padding: 8px 16px; cursor: pointer; }
   .tabs button.on { background: var(--surface2); color: var(--text); box-shadow: inset 0 0 0 1px var(--stroke2); }
 
+  .banner { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--stroke2); display: block; }
+
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
   .card { background: linear-gradient(180deg, #15181E, #121419); border: 1px solid var(--stroke); border-radius: 16px; padding: 20px; }
   .card h3 { margin: 0 0 6px; font-size: 17px; }
@@ -138,6 +218,7 @@
     <a class="brand" href="./"><img src="../logo.png" alt="Game Color Guard logo" width="30" height="30">Game Color Guard</a>
     <nav>
       <a href="#before-after">Before / After</a>
+      <a href="#fps-boost">FPS Boost</a>
       <a href="#features">Features</a>
       <a href="#safety">Safety</a>
       <a href="#faq">FAQ</a>
@@ -147,8 +228,8 @@
 
   <main>
     <section class="hero">
-      <h1>Make Enemies Easier to See<br><span>Digital Vibrance & FPS Boost for CS2 and VALORANT</span></h1>
-      <p>Per-game digital vibrance, brightness and gamma that work on <strong>NVIDIA, AMD, Intel and laptops</strong> and don't reset on Alt+Tab. Plus a safe, one-click reversible FPS boost tuned to your PC, and the current settings of 200+ pro players. Free.</p>
+      <h1>Free FPS Booster &amp; Digital Vibrance<br><span>for CS2 and VALORANT</span></h1>
+      <p>Make enemies easier to see. Color settings <strong>without NVIDIA</strong>: per-game digital vibrance, brightness and gamma that work on <strong>AMD, Intel and laptops</strong> and don't reset on Alt+Tab. Plus a safe, one-click reversible FPS boost tuned to your PC, and the current settings of 200+ pro players. Free.</p>
       <div class="cta">
         <a class="btn primary" href="https://github.com/DoGood-Studio/game-color-guard/releases/latest/download/GameColorGuard.exe">⬇ Download for Windows</a>
         <a class="btn secondary" href="https://github.com/DoGood-Studio/game-color-guard">Source Code (GitHub)</a>
@@ -173,13 +254,19 @@
       <p class="note">Images: Counter-Strike 2 — Valve's Steam store image; VALORANT — in-game image from Riot Games' official VALORANT Asset Kit. The "after" side is produced with the same math the app applies to your screen; your result depends on your monitor and profile.</p>
     </section>
 
+    <section id="fps-boost">
+      <h2>Free FPS Booster for CS2 and VALORANT</h2>
+      <p class="lead">Knows your PC and recommends only safe settings you can undo with one click. Works on low-end PCs and laptops too.</p>
+      <img class="banner" src="cs2-valorant-fps-boost.jpg" alt="CS2 and VALORANT FPS boost: turns off Windows animations and Game Bar capture, raises game priority and pins the game to the fast GPU, all undone with one click" width="1600" height="900" loading="lazy">
+    </section>
+
     <section id="features">
       <h2>Features</h2>
       <p class="lead">Everything in one window, five tabs.</p>
       <div class="grid">
-        <div class="card"><div class="ico">🎨</div><h3>Digital Vibrance on Any GPU</h3><p>Brightness, contrast, gamma, vibrance (saturation), hue and RGB per game. Uses the Windows color engine, so it works on NVIDIA, AMD and Intel, even on hybrid-graphics laptops where the driver setting has no effect. An alternative to VibranceGUI.</p></div>
+        <div class="card"><div class="ico">🎨</div><h3>Color Settings Without NVIDIA</h3><p>Brightness, contrast, gamma, vibrance (saturation), hue and RGB per game. Uses the Windows color engine, so it works on NVIDIA, AMD and Intel, even on hybrid-graphics laptops where the driver setting has no effect. An alternative to VibranceGUI.</p></div>
         <div class="card"><div class="ico">🔁</div><h3>Doesn't Reset on Alt+Tab</h3><p>The profile stays while the game is on screen and is removed when you minimize it or another window covers it. Your desktop, browser and videos keep their normal colors.</p></div>
-        <div class="card"><div class="ico">⚡</div><h3>Safe FPS Boost</h3><p>Detects laptop or desktop, plugged in or on battery, hybrid GPU and monitor Hz, then recommends safe Windows settings: animations, Game DVR, Game Mode, power mode, game priority, highest refresh rate, high-performance GPU.</p></div>
+        <div class="card"><div class="ico">⚡</div><h3>Free FPS Booster</h3><p>Detects laptop or desktop, plugged in or on battery, hybrid GPU and monitor Hz, then recommends safe Windows settings: animations, Game DVR, Game Mode, power mode, game priority, highest refresh rate, high-performance GPU. Helps low-end PCs and laptops too.</p></div>
         <div class="card"><div class="ico">🧹</div><h3>Background App Cleaner</h3><p>Lists running apps by CPU and RAM use. Games, anti-cheat and drivers are protected; only the apps you select are closed.</p></div>
         <div class="card"><div class="ico">🏆</div><h3>Pro Player Settings</h3><p>201 pros from 37 top teams (19 CS2, 18 VALORANT). Sensitivity converted to your DPI, one-click CS2 config, copy VALORANT crosshair codes.</p></div>
         <div class="card"><div class="ico">🖥️</div><h3>System Report</h3><p>Single or dual-channel RAM and XMP, CPU power/thermal limits, SSD or HDD, GPU driver age, monitor Hz, Memory Integrity. Tells you what is holding your FPS back.</p></div>
@@ -224,10 +311,13 @@
     <section id="faq">
       <h2>FAQ</h2>
       <details><summary>Will I get banned (VAC, Vanguard, FACEIT)?</summary><p>The app never reads or writes game memory and never injects into the game. Colors are changed through Windows' own gamma ramp and color matrix, the same level as the NVIDIA Control Panel or Windows color filters. We can't speak for anti-cheat vendors, but nothing in the app touches the game itself.</p></details>
-      <details><summary>Does digital vibrance work on AMD and Intel graphics?</summary><p>Yes. Vibrance is applied by the Windows color engine, independent of your graphics card. The color layer is visible in borderless (windowed fullscreen) mode, not in exclusive fullscreen.</p></details>
-      <details><summary>What is the best digital vibrance setting for CS2?</summary><p>Most guides suggest 60–80% in the NVIDIA Control Panel, and some top players keep the default. The app's "Recommended settings" button applies brightness 55, contrast 55, gamma 1.10 and vibrance 85 (50 is neutral); tune it on your own monitor with the 10-second live preview.</p></details>
-      <details><summary>How do I make VALORANT more vibrant or brighter?</summary><p>Raise vibrance (NVIDIA: Digital Vibrance, AMD: Saturation) and slightly raise brightness or gamma. Game Color Guard does this per game on any GPU and only while VALORANT is on screen. Set VALORANT to windowed fullscreen.</p></details>
-      <details><summary>How do I increase FPS in CS2 and VALORANT?</summary><p>Start with the in-game settings (the app includes CS2, VALORANT and NVIDIA guides), then apply the recommended FPS Boost settings and close background apps. The biggest gains usually come from plugging in a laptop, moving from single to dual-channel RAM and running your monitor at its highest Hz; the System page checks these on your PC. We don't promise a fixed number.</p></details>
+      <details><summary>What is the AMD equivalent of digital vibrance? Does it work on AMD?</summary><p>On AMD it is called Saturation (Radeon Adrenalin). Game Color Guard works on AMD directly: vibrance is applied by the Windows color engine, so no driver setting is needed.</p></details>
+      <details><summary>Can I use digital vibrance on a laptop or with Intel graphics?</summary><p>Yes. Because Windows applies the colors, it works with Intel integrated graphics and on hybrid-graphics laptops, including the built-in screen. The color layer is visible in borderless (windowed fullscreen) mode, not in exclusive fullscreen.</p></details>
+      <details><summary>VibranceGUI is not working on my laptop, AMD or Intel PC. What can I use?</summary><p>Game Color Guard does not depend on the graphics driver, so it works where driver-based tools can't reach the screen. Run your game in borderless / windowed fullscreen.</p></details>
+      <details><summary>How do I make VALORANT more colorful or vibrant?</summary><p>Raise vibrance (NVIDIA: Digital Vibrance, AMD: Saturation) and slightly raise brightness or gamma. Game Color Guard does this per game on any GPU and only while VALORANT is on screen. Set VALORANT to windowed fullscreen.</p></details>
+      <details><summary>What is the best digital vibrance for CS2 and VALORANT?</summary><p>Most guides suggest 60–80% in the NVIDIA Control Panel, and some top players keep the default. The app's "Recommended settings" button applies brightness 55, contrast 55, gamma 1.10 and vibrance 85 (50 is neutral); tune it on your own monitor with the 10-second live preview.</p></details>
+      <details><summary>What are the best CS2 settings for FPS and visibility?</summary><p>Keep Boost Player Contrast on and Global Shadow Quality at Medium or higher (on Low you can't see enemy shadows); lower shader, texture and particle detail; NVIDIA Reflex on and V-Sync off. The app's CS2 guide lists these with the reasons, and copies CS2 launch options in one click.</p></details>
+      <details><summary>How do I boost FPS and fix FPS drops in CS2 and VALORANT?</summary><p>Apply the recommended FPS Boost settings and close heavy background apps. The biggest gains usually come from plugging in a laptop, moving from single to dual-channel RAM and running your monitor at its highest Hz; the System page checks these on your PC. We don't promise a fixed FPS number.</p></details>
       <details><summary>Does digital vibrance increase FPS?</summary><p>No. Vibrance is visual only; it helps you see, not render faster. FPS gains come from the separate FPS Boost page.</p></details>
       <details><summary>Is it free?</summary><p>Yes. Under the PolyForm Noncommercial license you can use, modify and share it for non-commercial purposes; it may not be sold.</p></details>
       <details><summary>Windows shows a SmartScreen warning?</summary><p>The exe is not code-signed, so it may appear on first launch: "More info" › "Run anyway". The source code is on GitHub and the exe is <a href="https://www.virustotal.com/gui/file/bb9d9c611562c7046f7c98d6d7e220017330859a73fc3d4e2aca7364f4280a1a/detection" rel="noopener">clean on VirusTotal (0/68)</a>.</p></details>

@@ -14,12 +14,29 @@ namespace GameColorGuard;
 ///  • "--beforeafter &lt;klasör&gt; &lt;görüntü&gt; &lt;ad&gt; [...]": gerçek oyun görüntüsüne uygulamanın kendi renk hesabını
 ///    (Windows renk matrisi, ardından gama rampası — ekranda uygulandıkları sırayla) uygular;
 ///    &lt;ad&gt;-once.jpg, &lt;ad&gt;-sonra.jpg ve yan yana &lt;ad&gt;-once-sonra.jpg üretir.
-///  • "--fpsbanner &lt;çıktı.jpg&gt; &lt;ekran-görüntüsü.png&gt; &lt;arka-plan.jpg&gt;": FPS Boost tanıtım görseli.
+///  • "--compose &lt;önce.jpg&gt; &lt;sonra.jpg&gt; &lt;çıktı.jpg&gt; [tr|en]": hazır önce/sonra çiftini seçilen dilde etiketleyip yan yana koyar.
+///  • "--fpsbanner &lt;çıktı.jpg&gt; &lt;ekran-görüntüsü.png&gt; &lt;arka-plan.jpg&gt; [tr|en]": FPS Boost tanıtım görseli.
 /// </summary>
 internal static class BeforeAfter
 {
     private const int Width = 1280, Height = 720;
     private static readonly ColorSettings Profile = new() { Brightness = 55, Contrast = 55, Gamma = 110, DigitalVibrance = 85 };
+    // Görsellerdeki sürüm programın kendi sürümünden gelir (eski sürüm numarası görselde kalmasın).
+    private static readonly string AppVersion = typeof(BeforeAfter).Assembly.GetName().Version is { } v ? $"{v.Major}.{v.Minor}" : "";
+
+    internal static int ComposePair(string beforePath, string afterPath, string output, string language)
+    {
+        try
+        {
+            SaveJpeg(Compose(LoadCover(beforePath, Width, Height), LoadCover(afterPath, Width, Height), language), output);
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            try { File.WriteAllText(output + ".error.txt", ex.ToString()); } catch { }
+            return 1;
+        }
+    }
 
     internal static int Run(string[] args)
     {
@@ -34,7 +51,7 @@ internal static class BeforeAfter
                 string name = args[i + 1];
                 SaveJpeg(before, Path.Combine(folder, name + "-once.jpg"));
                 SaveJpeg(after, Path.Combine(folder, name + "-sonra.jpg"));
-                SaveJpeg(Compose(before, after), Path.Combine(folder, name + "-once-sonra.jpg"));
+                SaveJpeg(Compose(before, after, "tr"), Path.Combine(folder, name + "-once-sonra.jpg"));
             }
             return 0;
         }
@@ -91,8 +108,9 @@ internal static class BeforeAfter
     }
 
     /// <summary>Aynı sahne yan yana: solda önce, sağda sonra.</summary>
-    private static BitmapSource Compose(BitmapSource before, BitmapSource after)
+    private static BitmapSource Compose(BitmapSource before, BitmapSource after, string language)
     {
+        bool english = language == "en";
         const int gap = 12;
         double panelWidth = (Width - gap) / 2.0, panelHeight = panelWidth * Height / Width;
         int canvasHeight = (int)Math.Ceiling(panelHeight);
@@ -103,15 +121,17 @@ internal static class BeforeAfter
             dc.DrawRectangle(new SolidColorBrush(Color.FromRgb(0x0A, 0x0B, 0x0E)), null, new Rect(0, 0, Width, canvasHeight));
             dc.DrawImage(before, new Rect(0, 0, panelWidth, panelHeight));
             dc.DrawImage(after, new Rect(panelWidth + gap, 0, panelWidth, panelHeight));
-            Label(dc, "ÖNCE", new Point(16, 16), 20, Color.FromArgb(0xC8, 0x14, 0x16, 0x1B), Colors.White);
-            Label(dc, "SONRA · Game Color Guard", new Point(panelWidth + gap + 16, 16), 20, Color.FromArgb(0xE6, 0xFF, 0x7A, 0x1A), Color.FromRgb(0x1A, 0x0D, 0x04));
+            Label(dc, english ? "BEFORE" : "ÖNCE", new Point(16, 16), 20, Color.FromArgb(0xC8, 0x14, 0x16, 0x1B), Colors.White);
+            Label(dc, (english ? "AFTER" : "SONRA") + " · Game Color Guard", new Point(panelWidth + gap + 16, 16), 20,
+                Color.FromArgb(0xE6, 0xFF, 0x7A, 0x1A), Color.FromRgb(0x1A, 0x0D, 0x04));
         }
         return Render(visual, Width, canvasHeight);
     }
 
     /// <summary>FPS Boost tanıtım görseli: bulanık gerçek oyun arka planı, başlık, özellik çipleri ve uygulama ekranı.</summary>
-    internal static int Banner(string output, string screenshot, string background)
+    internal static int Banner(string output, string screenshot, string background, string language = "tr")
     {
+        bool english = language == "en";
         try
         {
             const int w = 1600, h = 900;
@@ -139,16 +159,26 @@ internal static class BeforeAfter
 
                 // Sol: başlık ve metin
                 Text(dc, "FPS BOOST", new Point(80, 150), 22, FontWeights.SemiBold, Color.FromRgb(0xFF, 0xB0, 0x66));
-                Text(dc, "Sisteminizi tanır.", new Point(78, 190), 62, FontWeights.Bold, Colors.White);
-                Text(dc, "Güvenle hızlandırır.", new Point(78, 262), 62, FontWeights.Bold, Color.FromRgb(0xFF, 0x9A, 0x3D));
-                Text(dc, "Dizüstü mü masaüstü mü, prizde mi pilde mi, hibrit GPU var mı bakar;", new Point(82, 360), 21, FontWeights.Normal, Color.FromRgb(0xA3, 0xAA, 0xB7));
-                Text(dc, "yalnızca geri alınabilir Windows ayarlarını önerir. Yönetici izni gerekmez.", new Point(82, 390), 21, FontWeights.Normal, Color.FromRgb(0xA3, 0xAA, 0xB7));
+                Text(dc, english ? "Knows your PC." : "Sisteminizi tanır.", new Point(78, 190), 62, FontWeights.Bold, Colors.White);
+                Text(dc, english ? "Speeds it up safely." : "Güvenle hızlandırır.", new Point(78, 262), 62, FontWeights.Bold, Color.FromRgb(0xFF, 0x9A, 0x3D));
+                Text(dc, english ? "Checks laptop or desktop, plugged in or on battery, hybrid GPU;"
+                                 : "Dizüstü mü masaüstü mü, prizde mi pilde mi, hibrit GPU var mı bakar;",
+                    new Point(82, 360), 21, FontWeights.Normal, Color.FromRgb(0xA3, 0xAA, 0xB7));
+                Text(dc, english ? "recommends only reversible Windows settings. No admin rights needed."
+                                 : "yalnızca geri alınabilir Windows ayarlarını önerir. Yönetici izni gerekmez.",
+                    new Point(82, 390), 21, FontWeights.Normal, Color.FromRgb(0xA3, 0xAA, 0xB7));
 
-                string[] chips =
-                {
-                    "Windows animasyonları kapalı", "Xbox Game Bar kaydı kapalı", "Oyun Modu açık", "Oyuna yüksek öncelik",
-                    "En yüksek yenileme hızı", "Oyunu güçlü GPU'ya sabitle", "Bildirimler oyunda sessiz", "Tek tıkla hepsini geri al"
-                };
+                string[] chips = english
+                    ? new[]
+                    {
+                        "Windows animations off", "Xbox Game Bar capture off", "Game Mode on", "High game priority",
+                        "Highest refresh rate", "Game on the fast GPU", "Notifications muted in game", "Undo everything in one click"
+                    }
+                    : new[]
+                    {
+                        "Windows animasyonları kapalı", "Xbox Game Bar kaydı kapalı", "Oyun Modu açık", "Oyuna yüksek öncelik",
+                        "En yüksek yenileme hızı", "Oyunu güçlü GPU'ya sabitle", "Bildirimler oyunda sessiz", "Tek tıkla hepsini geri al"
+                    };
                 double x = 82, y = 460;
                 foreach (string chip in chips)
                 {
@@ -160,7 +190,8 @@ internal static class BeforeAfter
                     dc.DrawText(ft, new Point(x + 14, y + 8));
                     x += cw + 10;
                 }
-                Text(dc, "DoGood Studio · Game Color Guard 3.1 · ücretsiz", new Point(82, 800), 17, FontWeights.SemiBold, Color.FromRgb(0x7E, 0x86, 0x96));
+                Text(dc, $"DoGood Studio · Game Color Guard {AppVersion} · {(english ? "free" : "ücretsiz")}", new Point(82, 800), 17,
+                    FontWeights.SemiBold, Color.FromRgb(0x7E, 0x86, 0x96));
 
                 // Sağ: uygulama ekranı (gölgeli, yuvarlak köşeli)
                 double sw = 780, sh = sw * shot.PixelHeight / shot.PixelWidth;

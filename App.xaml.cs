@@ -32,7 +32,12 @@ public partial class App : Application
         }
         if (args.Length >= 4 && args[0].Equals("--fpsbanner", StringComparison.OrdinalIgnoreCase))
         {
-            Shutdown(BeforeAfter.Banner(args[1], args[2], args[3]));
+            Shutdown(BeforeAfter.Banner(args[1], args[2], args[3], args.Length >= 5 ? args[4] : "tr"));
+            return;
+        }
+        if (args.Length >= 4 && args[0].Equals("--compose", StringComparison.OrdinalIgnoreCase))
+        {
+            Shutdown(BeforeAfter.ComposePair(args[1], args[2], args[3], args.Length >= 5 ? args[4] : "tr"));
             return;
         }
         if (args.Length >= 2 && args[0].Equals("--langtest", StringComparison.OrdinalIgnoreCase))
