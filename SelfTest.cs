@@ -1,0 +1,115 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using GameColorGuard.Core;
+using GameColorGuard.Tweaks;
+
+namespace GameColorGuard;
+
+/// <summary>
+/// "--selftest &lt;rapor.txt&gt;": salt okunur doğrulama. Sistem tanıma, arka plan taraması, pro veri ve CS2 config
+/// üretimi, oyun görünürlük tespiti ve ayarların okunan durumu raporlanır. Ekran renklerine ve Windows ayarlarına
+/// hiçbir şey yazılmaz; hiçbir süreç kapatılmaz.
+/// </summary>
+internal static class SelfTest
+{
+    internal static int Run(string path)
+    {
+        var report = new StringBuilder();
+        int failures = 0;
+        void Check(bool ok, string message)
+        {
+            if (!ok) failures++;
+            report.AppendLine($"{(ok ? "OK  " : "HATA")} {message}");
+        }
+
+        try
+        {
+            ColorSettings settings = ColorSettings.Load();
+
+            SystemProfile system = SystemProfile.Detect(settings.GamePaths.Values);
+            report.AppendLine($"Sistem: {system.Kind} | {system.Manufacturer} {system.Model} | kasa {system.ChassisType} | {system.PowerText}");
+            report.AppendLine($"  CPU {system.Cpu} ({system.LogicalCores}) | RAM {system.RamGb} GB {system.RamSpeed}/{system.RamRatedSpeed} MT/s");
+            report.AppendLine($"  GPU: {string.Join(" + ", system.Gpus)} | hibrit {system.HybridGraphics}");
+            foreach (DisplayInfo d in system.Displays)
+                report.AppendLine($"  Ekran {d.Device} {d.Width}x{d.Height} @{d.RefreshRate}/{d.MaxRefreshRate} Hz birincil={d.Primary} GPU={d.Gpu}");
+            report.AppendLine($"  Plan: {system.PowerPlan} (yüksek={system.HighPerformancePlan}) | HAGS {system.Hags} | HVCI {system.MemoryIntegrity} | {system.Windows}");
+            report.AppendLine($"  RAM modül {system.RamModules}, yük %{system.RamLoadPercent} | çekirdek {system.PhysicalCores}/{system.LogicalCores} hibrit={system.HybridCpu} P={system.PerformanceCores} | CPU taban {system.CpuBaseMhz} sınır {system.CpuLimitMhz} MHz");
+            foreach (GameDrive drive in system.GameDrives) report.AppendLine($"  Oyun diski {drive.Root} SSD={drive.Ssd} boş {drive.FreeGb:0}/{drive.TotalGb:0} GB");
+            report.AppendLine($"  GPU sürücü {system.GpuDriverVersion} {system.GpuDriverDate:yyyy-MM-dd}");
+            foreach (Advice advice in system.Advise()) report.AppendLine($"  [{advice.Level}] {advice.Title}");
+            Check(system.Cpu.Length > 0 && system.RamGb > 0 && system.Displays.Count > 0, "Sistem tanıma temel alanları dolu");
+
+            report.AppendLine();
+            var catalog = new TweakCatalog(settings);
+            foreach (ITweak tweak in catalog.All)
+            {
+                (bool recommended, string reason) = catalog.Recommendation(tweak, system);
+                string state;
+                try { state = tweak.Read().Summary; } catch (Exception ex) { state = "OKUNAMADI " + ex.Message; failures++; }
+                report.AppendLine($"  {(recommended ? "[önerilen]" : "[isteğe]  ")} {tweak.Id}: {state} — {reason}");
+            }
+            Check(catalog.All.Select(t => t.Id).Distinct().Count() == catalog.All.Count, $"{catalog.All.Count} ayarın kimlikleri benzersiz");
+
+            report.AppendLine();
+            var running = GameProcessMonitor.FindRunningGames(settings.GameExecutables);
+            ForegroundWindow? foreground = GameProcessMonitor.Foreground();
+            report.AppendLine($"Çalışan oyunlar: {string.Join(", ", running)} | ön plan: {foreground?.Executable} [{foreground?.ClassName}] " +
+                              $"geçici kabuk={GameProcessMonitor.IsTransientShellWindow(foreground)}");
+            foreach (string game in running)
+                report.AppendLine($"  {game}: ekranda görünür={GameProcessMonitor.IsGameVisible(game, foreground)} yol={SystemProfile.ProcessPath(game)}");
+
+            report.AppendLine();
+            var apps = BackgroundScanner.Scan(settings.GameExecutables, TimeSpan.FromMilliseconds(600));
+            foreach (var group in apps.GroupBy(a => a.Category))
+                report.AppendLine($"  {group.Key}: {string.Join(", ", group.Select(a => $"{a.Name} ({a.MemoryBytes / 1024 / 1024} MB, %{a.CpuPercent:0.0})"))}");
+            Check(apps.Count > 0, $"Arka plan taraması {apps.Count} uygulama buldu");
+            Check(apps.All(a => !a.Executable.Equals("explorer.exe", StringComparison.OrdinalIgnoreCase)), "Sistem süreçleri listede yok");
+
+            report.AppendLine();
+            ProDataset data = ProConfig.Load();
+            Check(data.Players.Count >= 150 && data.Teams.Count >= 30, $"Pro veri yüklendi: {data.Players.Count} oyuncu, {data.Teams.Count} takım ({data.FetchedAt})");
+            Check(data.Players.All(p => p.PhotoUrl is not null), "Her oyuncunun fotoğraf adresi var");
+            Check(ImageCache.GetAsync(GameIcons.OfficialIconUrl("VALORANT-Win64-Shipping.exe"), 26).GetAwaiter().GetResult() is not null,
+                "Resmi VALORANT ikonu indirilip çözüldü");
+            Check(ImageCache.GetAsync(GameIcons.OfficialIconUrl("cs2.exe"), 26).GetAwaiter().GetResult() is not null,
+                "Resmi CS2 ikonu (ico) indirilip çözüldü");
+            Check(ImageCache.GetAsync(data.Players.First(p => p.Id == "donk").PhotoUrl, 54).GetAwaiter().GetResult() is not null,
+                "Oyuncu fotoğrafı (WebP) indirilip çözüldü");
+            Check(ImageCache.GetAsync(data.Players.First(p => p.Id == "tenz").PhotoUrl, 54).GetAwaiter().GetResult() is not null,
+                "Oyuncu fotoğrafı (PNG) indirilip çözüldü");
+            foreach (ProTeam team in data.Teams.Where(t => t.LogoUrl?.EndsWith(".svg") == true))
+                Check(ImageCache.GetAsync(team.LogoUrl, 18).GetAwaiter().GetResult() is not null, $"  SVG takım logosu çizildi: {team.Name} ({team.Game})");
+            int rasterLogos = data.Teams.Count(t => t.LogoUrl is not null && !t.LogoUrl.EndsWith(".svg") &&
+                                                   ImageCache.GetAsync(t.LogoUrl, 18).GetAwaiter().GetResult() is not null);
+            Check(rasterLogos == data.Teams.Count(t => t.LogoUrl is not null && !t.LogoUrl.EndsWith(".svg")), $"  {rasterLogos} PNG takım logosu çözüldü");
+            foreach (ProPlayer player in data.Players.Where(p => p.Id is "donk" or "m0nesy" or "xantares" or "woxic" or "tenz" or "cned" or "s1mple"))
+            {
+                double? sens = ProConfig.ConvertedSensitivity(player, settings.MouseDpi);
+                Check(sens is > 0, $"{player.GameLabel} {player.Name}: {settings.MouseDpi} DPI için hassasiyet {sens}");
+                if (player.IsCs2)
+                {
+                    string cfg = ProConfig.BuildCs2Config(player, settings.MouseDpi);
+                    Check(cfg.Contains("cl_crosshairsize") && cfg.Contains("sensitivity \""), $"  {ProConfig.ConfigFileName(player)} komutları üretildi");
+                }
+                else Check(player.Crosshair?.Code is { Length: > 0 }, "  VALORANT crosshair kodu var");
+            }
+            ProPlayer donk = data.Players.First(p => p.Id == "donk");
+            report.AppendLine("--- örnek config (donk) ---");
+            report.Append(ProConfig.BuildCs2Config(donk, settings.MouseDpi));
+            settings.GamePaths.TryGetValue("cs2.exe", out string? cs2);
+            report.AppendLine($"CS2 cfg klasörü: {ProConfig.FindCs2CfgFolder(cs2 ?? SystemProfile.ProcessPath("cs2.exe")) ?? "BULUNAMADI"}");
+            report.AppendLine($"CS2 exe: {ProConfig.FindCs2Executable(cs2)} | VALORANT exe: {ProConfig.FindValorantExecutable(null) ?? "kurulu değil"}");
+        }
+        catch (Exception ex)
+        {
+            failures++;
+            report.AppendLine("BEKLENMEYEN HATA: " + ex);
+        }
+
+        report.Insert(0, $"Game Color Guard öz-test · {DateTime.Now:yyyy-MM-dd HH:mm:ss} · {failures} hata{Environment.NewLine}");
+        File.WriteAllText(path, report.ToString(), new UTF8Encoding(false));
+        return failures == 0 ? 0 : 1;
+    }
+}

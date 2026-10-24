@@ -1,0 +1,9 @@
+bin/
+obj/
+publish/
+.vs/
+*.user
+*.log
+render-*.png
+*.png.error.txt
+eski-surum/

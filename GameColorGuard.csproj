@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>assets\app-icon.ico</ApplicationIcon>
+    <AssemblyName>GameColorGuard</AssemblyName>
+    <RootNamespace>GameColorGuard</RootNamespace>
+    <Version>3.1.0</Version>
+    <Product>Game Color Guard</Product>
+    <Company>DoGood Studio</Company>
+    <Authors>DoGood Studio</Authors>
+    <Copyright>© 2026 DoGood Studio</Copyright>
+    <AssemblyTitle>Game Color Guard</AssemblyTitle>
+    <Description>Oyun renk profili, FPS Boost ve pro ayarlar</Description>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+    <!-- Tepside saatlerce bekleyen küçük bir uygulama: arka plan GC iş parçacığı ve PGO ölçümü gereksiz bellek. -->
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <TieredPGO>false</TieredPGO>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="assets\app-logo.png" />
+    <Resource Include="assets\app-icon.ico" />
+    <EmbeddedResource Include="Data\ProSettings.json" LogicalName="ProSettings.json" />
+  </ItemGroup>
+</Project>
