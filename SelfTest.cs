@@ -66,7 +66,35 @@ internal static class SelfTest
             report.AppendLine($"Çalışan oyunlar: {string.Join(", ", running)} | ön plan: {foreground?.Executable} [{foreground?.ClassName}] " +
                               $"geçici kabuk={GameProcessMonitor.IsTransientShellWindow(foreground)}");
             foreach (string game in running)
-                report.AppendLine($"  {game}: ekranda görünür={GameProcessMonitor.IsGameVisible(game, foreground)} yol={SystemProfile.ProcessPath(game)}");
+            {
+                string visible = foreground is null || GameProcessMonitor.IsTransientShellWindow(foreground)
+                    ? "belirsiz (geçici kabuk)"
+                    : GameProcessMonitor.IsGameVisible(game, foreground).ToString();
+                report.AppendLine($"  {game}: gösteriliyor={GameProcessMonitor.IsGameShown(game)} ekranda görünür={visible} yol={SystemProfile.ProcessPath(game)}");
+            }
+
+            // Odak dışı profil kararı (saf mantık, pencere okunmaz): Alt+Tab menüsü profili açmamalı, açıksa korumalı.
+            {
+                var games = new[] { "cs2.exe" };
+                var altTab = new ForegroundWindow(IntPtr.Zero, 1, "explorer.exe", "XamlExplorerHostIslandWindow");
+                var smallApp = new ForegroundWindow(IntPtr.Zero, 2, "discord.exe", "Chrome_WidgetWin_1");
+                bool Shown(string _) => true;
+                bool Covered(string _, ForegroundWindow __) => false;
+                bool NotCovered(string _, ForegroundWindow __) => true;
+                string? Decide(ForegroundWindow? fg, bool keep, bool hold, Func<string, ForegroundWindow, bool> vis) =>
+                    GameProcessMonitor.UnfocusedProfileGame(games, fg, keep, hold, Shown, vis);
+
+                Check(Decide(altTab, true, hold: false, NotCovered) is null,
+                    "Profil kapalıyken Alt+Tab menüsü profili açmıyor (iki uygulama arası geçişte yanıp sönme yok)");
+                Check(Decide(null, true, hold: false, NotCovered) is null, "Profil kapalıyken boş ön plan profili açmıyor");
+                Check(Decide(altTab, true, hold: true, Covered) == "cs2.exe", "Oyundan Alt+Tab yaparken menü açıkken profil korunuyor");
+                Check(Decide(altTab, false, hold: true, Covered) == "cs2.exe", "Görünürken koru kapalıyken de Alt+Tab menüsünde profil korunuyor");
+                Check(Decide(smallApp, true, hold: false, Covered) is null, "Oyunu örten pencerede profil kapalı");
+                Check(Decide(smallApp, true, hold: true, NotCovered) == "cs2.exe", "Oyunu örtmeyen küçük pencerede profil açık (görünürken koru)");
+                Check(Decide(smallApp, false, hold: true, NotCovered) is null, "Görünürken koru kapalıyken başka pencerede profil kapalı");
+                Check(GameProcessMonitor.UnfocusedProfileGame(games, altTab, true, true, _ => false, NotCovered) is null,
+                    "Küçültülmüş oyunda Alt+Tab menüsü profili korumuyor");
+            }
 
             report.AppendLine();
             var apps = BackgroundScanner.Scan(settings.GameExecutables, TimeSpan.FromMilliseconds(600));

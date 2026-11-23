@@ -502,14 +502,12 @@ public partial class MainWindow : Window
         ForegroundWindow? foreground = GameProcessMonitor.Foreground();
         string? foregroundGame = GameProcessMonitor.MatchGame(foreground, _settings.GameExecutables);
 
-        // Odak oyunda değilse: "görünürken koru" açıksa ya da odak yalnızca Alt+Tab menüsü gibi geçici bir kabuk
-        // penceresindeyse, oyun ekranda görünür kaldığı sürece profil oyuna ait sayılır.
-        string? visibleGame = null;
-        if (foregroundGame is null && runningGames.Count > 0 &&
-            (_settings.KeepWhileVisible || GameProcessMonitor.IsTransientShellWindow(foreground)))
-        {
-            visibleGame = runningGames.FirstOrDefault(game => GameProcessMonitor.IsGameVisible(game, foreground));
-        }
+        // Odak oyunda değilse: "görünürken koru" açıksa oyun ekranda görünür kaldığı sürece profil oyuna ait sayılır.
+        // Alt+Tab menüsü gibi geçici kabuk pencerelerinde son karar korunur (açık olan açık, kapalı olan kapalı kalır).
+        string? visibleGame = foregroundGame is null
+            ? GameProcessMonitor.UnfocusedProfileGame(runningGames, foreground, _settings.KeepWhileVisible,
+                holdCurrentProfile: _gameProfileOn && _restorePendingSince is null)
+            : null;
         LearnGamePaths(runningGames);
         UpdateGameState(runningGames, foregroundGame, visibleGame, foreground);
         // Oyun yokken saniyede bir yoklamak yeterli (ön plan değişimi zaten kancayla anında gelir); süreç taraması az tutulur.
@@ -544,7 +542,7 @@ public partial class MainWindow : Window
                 StopPreviewState();
                 bool applied = ApplyProfile(out string? message);
                 _profileApplied = applied;
-                LogEvent($"{name} {(hasFocus ? "odağa geldi" : "ekranda görünür")}: profil {(applied ? "uygulandı" : "uygulanamadı")}" +
+                LogEvent($"{name} {(hasFocus ? "odağa geldi" : $"ekranda görünür (odak: {Describe(foreground)})")}: profil {(applied ? "uygulandı" : "uygulanamadı")}" +
                     (message is null ? "" : $" ({message})") + LayerSummary());
                 if (applied)
                     SetStatus(message ?? $"{name} — oyun profili etkin", message is null ? Tone.Success : Tone.Warning);

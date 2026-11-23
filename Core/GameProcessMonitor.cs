@@ -94,14 +94,40 @@ internal static class GameProcessMonitor
         foreground is not null && TransientShellClasses.Contains(foreground.ClassName);
 
     /// <summary>
-    /// Oyun ekranda görünür mü? Ana penceresi küçültülmemiş ve ön plandaki pencere oyunun bulunduğu
-    /// ekranın neredeyse tamamını örtmüyorsa görünür sayılır (kenarlıksız oyun Alt+Tab'da arkada kalır).
+    /// Odak oyunda değilken profilin hangi oyuna ait sayılacağı (null: profil kapalı olmalı).
+    /// Ön planda Alt+Tab menüsü, görev çubuğu, Başlat gibi geçici bir kabuk penceresi varsa (ya da ön plan
+    /// boşsa) arkada oyunun mu başka bir pencerenin mi durduğu bilinemez: son karar korunur. Profil açıksa ve
+    /// gizlenme beklemiyorsa oyun küçültülmediği sürece açık kalır; kapalıysa geçici pencere yüzünden açılmaz.
+    /// Eskiden geçici pencere "oyun görünür" sayılıyordu; oyun arkadayken iki uygulama arasında yapılan her
+    /// Alt+Tab profili ~1 sn açıp kapatıyor, ekran kendi kendine aydınlanıp kararıyordu.
     /// </summary>
-    internal static bool IsGameVisible(string executable, ForegroundWindow? foreground)
+    internal static string? UnfocusedProfileGame(IReadOnlyList<string> runningGames, ForegroundWindow? foreground,
+        bool keepWhileVisible, bool holdCurrentProfile,
+        Func<string, bool>? isShown = null, Func<string, ForegroundWindow, bool>? isVisible = null)
+    {
+        if (runningGames.Count == 0) return null;
+        if (foreground is null || IsTransientShellWindow(foreground))
+            return holdCurrentProfile ? runningGames.FirstOrDefault(isShown ?? IsGameShown) : null;
+        if (!keepWhileVisible) return null;
+        isVisible ??= IsGameVisible;
+        return runningGames.FirstOrDefault(game => isVisible(game, foreground));
+    }
+
+    /// <summary>Oyunun ana penceresi var, görünür ve küçültülmemiş mi?</summary>
+    internal static bool IsGameShown(string executable) => IsShown(MainWindowOf(executable));
+
+    private static bool IsShown(IntPtr window) =>
+        window != IntPtr.Zero && NativeMethods.IsWindowVisible(window) && !NativeMethods.IsIconic(window);
+
+    /// <summary>
+    /// Oyun ekranda görünür mü? Ana penceresi küçültülmemiş ve ön plandaki gerçek (geçici kabuk olmayan) pencere
+    /// oyunun bulunduğu ekranın neredeyse tamamını örtmüyorsa görünür sayılır (kenarlıksız oyun Alt+Tab'da arkada kalır).
+    /// Geçici kabuk penceresi bir şey söylemez; o durum <see cref="UnfocusedProfileGame"/> içinde ele alınır.
+    /// </summary>
+    internal static bool IsGameVisible(string executable, ForegroundWindow foreground)
     {
         IntPtr game = MainWindowOf(executable);
-        if (game == IntPtr.Zero || !NativeMethods.IsWindowVisible(game) || NativeMethods.IsIconic(game)) return false;
-        if (foreground is null || IsTransientShellWindow(foreground)) return true;
+        if (!IsShown(game)) return false;
         if (foreground.Handle == game) return true;
 
         IntPtr monitor = NativeMethods.MonitorFromWindow(game, 2 /* MONITOR_DEFAULTTONEAREST */);
