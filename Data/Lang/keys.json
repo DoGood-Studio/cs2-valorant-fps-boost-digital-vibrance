@@ -511,5 +511,15 @@
 "511": "{0} değeri",
 "512": "Sürükleyin · ok tuşlarıyla ince ayar · çift tık: nötr",
 "513": "ayar|Kapalı",
-"514": "%{0}"
+"514": "%{0}",
+"515": "Kendi CS2 ayarlarım",
+"516": "CS2'yi bir sonraki açışınızda pro config'ten önceki kendi ayarlarınız yüklenir (exec gcg_yedek)",
+"517": "{0} ayarları CS2'yi bir sonraki açışınızda otomatik yüklenecek. Oyun açıksa hemen yüklemek için konsola yapıştırın: {1} (panoya kopyalandı). Kendi ayarlarınız yedeklenemedi",
+"518": "{0} ayarları CS2'yi bir sonraki açışınızda otomatik yüklenecek. Oyun açıksa hemen yüklemek için konsola yapıştırın: {1} (panoya kopyalandı)",
+"519": "CS2'nin kayıtlı ayarları bulunamadı. CS2'yi bir kez açıp kapatın ve tekrar deneyin.",
+"520": "CS2'yi bir sonraki açışınızda kendi ayarlarınız yüklenecek. Oyun açıksa hemen dönmek için konsola yapıştırın: {0} (panoya kopyalandı)",
+"521": "Kendi ayarlarınız yedeklendi; {0} ayar CS2 varsayılanında olduğu için yedekte yok. CS2'yi bir sonraki açışınızda kendi ayarlarınız yüklenecek. Oyun açıksa hemen dönmek için konsola yapıştırın: {1} (panoya kopyalandı)",
+"522": "Hassasiyet, crosshair ve viewmodel ayarları CS2'yi bir sonraki açışınızda otomatik yüklenir",
+"523": "Yedek hazırlanamadı: {0}",
+"524": "Bu oyuncunun crosshair verisi CS2'nin eski crosshair sistemine ait; yalnız hassasiyet ve viewmodel yüklenir"
 }

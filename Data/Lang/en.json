@@ -511,5 +511,15 @@
 "511": "{0} value",
 "512": "Drag · arrow keys for fine adjustment · double-click: neutral",
 "513": "Off",
-"514": "{0}%"
+"514": "{0}%",
+"515": "My CS2 settings",
+"516": "Your own settings from before the pro config load the next time you start CS2 (exec gcg_yedek)",
+"517": "{0}'s settings will load automatically the next time you start CS2. If the game is open, paste into the console to load now: {1} (copied to clipboard). Your own settings could not be backed up",
+"518": "{0}'s settings will load automatically the next time you start CS2. If the game is open, paste into the console to load now: {1} (copied to clipboard)",
+"519": "CS2's saved settings were not found. Open and close CS2 once, then try again.",
+"520": "Your own settings will load the next time you start CS2. If the game is open, paste into the console to switch back now: {0} (copied to clipboard)",
+"521": "Your settings were backed up; {0} settings are at the CS2 default and are not in the backup. Your own settings will load the next time you start CS2. If the game is open, paste into the console to switch back now: {1} (copied to clipboard)",
+"522": "Sensitivity, crosshair and viewmodel settings load automatically the next time you start CS2",
+"523": "Backup could not be prepared: {0}",
+"524": "This player's crosshair data is from CS2's old crosshair system; only sensitivity and viewmodel are loaded"
 }

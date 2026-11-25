@@ -121,6 +121,56 @@ def pairs(fragment):
     return found
 
 
+def fields(fragment):
+    """Ayar satırlarının CS2 komut adı (data-field) → değer eşlemesi; ilk değer tutulur."""
+    found = {}
+    for k, v in re.findall(r'<tr[^>]*\sdata-field="([^"]+)"[^>]*>\s*<th[^>]*>.*?</th>\s*<td[^>]*>(.*?)</td>', fragment, re.S):
+        found.setdefault(k.strip(), squash(text(v)))
+    return found
+
+
+# CS2'nin Eylül 2026 crosshair sistemindeki stiller (oyunun kendi açıklamasıyla aynı sıra: 0-9).
+CS2_STYLES = [["Dynamic Cross"], ["Dynamic Circle"], ["Dynamic Cross (Classic)", "Dynamic Cross (Legacy)"], ["Static Circle"],
+              ["Static Cross"], ["Dynamic Cross (Legacy/Shot Feedback)", "Static Cross (Shot Feedback)"], ["Dot Only"],
+              ["Dynamic Quadrant", "Dynamic Quad"], ["Static Square"], ["Static Quadrant"]]
+STYLE_INDEX = {name.lower(): i for i, names in enumerate(CS2_STYLES) for name in names}
+BOOL_CVARS = {"cl_crosshair_recoil", "cl_crosshairdot", "cl_crosshair_t", "cl_ironsight_usecrosshaircolor"}
+OUTLINE = {"no": 0, "false": 0, "0": 0, "yes": 1, "true": 1, "1": 1, "half": 2, "2": 2}
+
+
+def cs2_crosshair(sec):
+    """
+    Yeni sistem crosshair komutları (prosettings'in kopyaladığı config ile aynı dönüşüm). Sayfada cl_crosshair_length
+    yoksa veri güncellemeden önceki (eski) sisteme aittir: CS2 bu komutları artık tanımaz, None döner.
+    """
+    raw = {k: v for k, v in fields(sec).items() if k.startswith(("cl_crosshair", "cl_ironsight_"))}
+    if "cl_crosshair_length" not in raw:
+        return None
+    cvars = {}
+    for name, value in raw.items():
+        v = value.strip()
+        if not v or v.lower() == "unknown":
+            continue
+        if name == "cl_crosshairstyle":
+            style = STYLE_INDEX.get(v.lower())
+            if style is None and re.fullmatch(r"\d", v):
+                style = int(v)
+            if style is not None:
+                cvars[name] = str(style)
+        elif name in BOOL_CVARS:
+            b = yes(v)
+            if b is not None:
+                cvars[name] = "1" if b else "0"
+        elif name == "cl_crosshair_drawoutline":
+            if v.lower() in OUTLINE:
+                cvars[name] = str(OUTLINE[v.lower()])
+        else:
+            n = num(v)
+            if n is not None:
+                cvars[name] = str(n)
+    return cvars
+
+
 def launch_options(fragment):
     m = re.search(r"<h[23][^>]*>\s*Launch Options\s*</h[23]>(.*?)<h[23]", fragment, re.S)
     if not m:
@@ -175,22 +225,13 @@ def parse_player(entry):
         "launchOptions": launch_options(sec) if game == "cs2" else None,
     }
     if game == "cs2":
-        outline = yes(p.get("Outline"))
+        cvars = cs2_crosshair(sec)
         player["crosshair"] = {
             "code": None,
             "style": p.get("Style"),
-            "length": num(p.get("Length (px)")),
-            "thickness": num(p.get("Thickness (px)")),
-            "gap": num(p.get("Gap (px)")),
-            "outline": outline,
-            "outlineThickness": num(p.get("Outline Thickness")) if outline else None,
-            "colorR": num(p.get("Red")),
-            "colorG": num(p.get("Green")),
-            "colorB": num(p.get("Blue")),
-            "alpha": num(p.get("Opacity")),
-            "dot": yes(p.get("Dot")),
-            "tStyle": yes(p.get("T Style")),
-            "followRecoil": yes(p.get("Follow Recoil")),
+            # CS2 konsol komutları (yeni sistem); eski sistemdeki oyuncularda None ve legacy=True.
+            "cvars": cvars,
+            "legacy": cvars is None,
         }
         player["viewmodel"] = {
             "fov": num(p.get("FOV")),
@@ -200,7 +241,9 @@ def parse_player(entry):
             "presetPos": None,
         }
     else:
-        code = p.get("Code")
+        # Kod eskiden "Code" satırındaydı; site artık <pre class="field-code"> içinde gösteriyor.
+        pre = re.search(r'<pre[^>]*class="[^"]*field-code[^"]*"[^>]*>(.*?)</pre>', sec, re.S)
+        code = p.get("Code") or (squash(text(pre.group(1))) if pre else None)
         player["crosshair"] = {"code": code if code and code.startswith("0;") else None}
     return player
 

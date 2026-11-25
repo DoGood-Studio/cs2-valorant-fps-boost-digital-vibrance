@@ -261,7 +261,7 @@ internal sealed class RefreshRateTweak : TweakBase
         error = null;
         if (_previousFrequency == 0) return true;
         bool ok = SetFrequency(PrimaryDevice(), _previousFrequency, out error);
-        _previousFrequency = 0;
+        if (ok) _previousFrequency = 0;   // başarısızsa eski Hz unutulmaz, yeniden denenebilir
         return ok;
     }
 

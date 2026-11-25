@@ -168,7 +168,9 @@ internal sealed class DisplayGamma : IDisposable
     // Monitör kalibrasyonu gibi küçük sapmalar korunur.
     private bool IsLeftover(GammaRamp ramp)
     {
-        if (_profile is not null && Close(ramp, BuildRamp(_profile)) && !Close(ramp, IdentityRamp())) return true;
+        // Ekrana yazılan rampa yalnız gamadır; tam profil, aydınlık/kontrastı da rampaya yazan eski sürümlerden kalmış olabilir.
+        if (_profile is not null && !Close(ramp, IdentityRamp()) &&
+            (Close(ramp, BuildRamp(ColorSettings.GammaOnly(_profile.Gamma))) || Close(ramp, BuildRamp(_profile)))) return true;
         int threshold = _leftoverSuspected ? 0x0200 : 0x0A00; // ~%0.8 / ~%3.9
         var identity = IdentityRamp();
         for (int i = 0; i < 256; i++)

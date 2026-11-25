@@ -30,7 +30,9 @@ public partial class MainWindow : Window
     private const double PreviewSeconds = 10;
     private const double PreviewClickGuardMs = 1200;
     // Oyun gizlendikten sonra renkleri geri almadan önceki bekleme: hızlı Alt+Tab ve kısa odak kaçışları ekranı kırpıştırmasın.
-    private static readonly TimeSpan RestoreDelay = TimeSpan.FromMilliseconds(700);
+    private static readonly TimeSpan RestoreDelay = TimeSpan.FromMilliseconds(300);
+    // Bekleme dolduğu anda denetler; yoklama aralığını beklemek çıkıştan sonra gecikmeli kararma yapıyordu.
+    private readonly DispatcherTimer _restoreTimer = new() { Interval = TimeSpan.FromMilliseconds(310) };
     // Oyuna dönüşte profil bu anlarda yeniden yazılır: sürücü/oyun tam ekran geçişinde rampayı sıfırlarsa geri gelir.
     private static readonly int[] ReassertAfterFocusMs = { 250, 900, 2500 };
 
@@ -144,6 +146,11 @@ public partial class MainWindow : Window
             CheckGameState();
             ReassertAfterFocus();
             VerifyAppliedProfile();
+        };
+        _restoreTimer.Tick += (_, _) =>
+        {
+            _restoreTimer.Stop();
+            if (_restorePendingSince is not null) CheckGameState();
         };
         _previewTimer.Tick += (_, _) => PreviewTick();
         _saveDebounceTimer.Tick += (_, _) =>
@@ -509,6 +516,12 @@ public partial class MainWindow : Window
                 holdCurrentProfile: _gameProfileOn && _restorePendingSince is null)
             : null;
         LearnGamePaths(runningGames);
+        // CS2 açılışında yüklenen pro / kendi ayarlar tek seferliktir; oyun açıldıktan sonra bekleyen yükleme boşaltılır.
+        if (runningGames.Contains("cs2.exe", StringComparer.OrdinalIgnoreCase))
+        {
+            _settings.GamePaths.TryGetValue("cs2.exe", out string? cs2Path);
+            Cs2AutoLoad.ConsumeIfLoaded(cs2Path);
+        }
         UpdateGameState(runningGames, foregroundGame, visibleGame, foreground);
         // Oyun yokken saniyede bir yoklamak yeterli (ön plan değişimi zaten kancayla anında gelir); süreç taraması az tutulur.
         TimeSpan interval = TimeSpan.FromMilliseconds(runningGames.Count > 0 ? 250 : 1000);
@@ -576,8 +589,13 @@ public partial class MainWindow : Window
         else if (_gameProfileOn)
         {
             // Oyun gizlendi (küçültüldü, örtüldü, kapandı ya da odaktan çıktı): kısa beklemeden sonra geri al.
-            _restorePendingSince ??= DateTime.UtcNow;
-            if (DateTime.UtcNow - _restorePendingSince.Value >= RestoreDelay || !running)
+            if (_restorePendingSince is null)
+            {
+                _restorePendingSince = DateTime.UtcNow;
+                _restoreTimer.Stop();
+                _restoreTimer.Start();
+            }
+            if (RestoreDue(_restorePendingSince.Value, DateTime.UtcNow, running))
             {
                 _gameProfileOn = false;
                 _restorePendingSince = null;
@@ -608,6 +626,10 @@ public partial class MainWindow : Window
         // Çizim/test modu Windows ayarlarına asla dokunmaz.
         if (!_testMode) _performance?.Update(running, hasFocus);
     }
+
+    /// <summary>Oyundan çıkışta renkleri geri alma zamanı geldi mi?</summary>
+    internal static bool RestoreDue(DateTime pendingSince, DateTime now, bool gameRunning) =>
+        now - pendingSince >= RestoreDelay || !gameRunning;
 
     private static string Describe(ForegroundWindow? window) =>
         window is null ? "bilinmeyen" : $"{(window.Executable.Length > 0 ? window.Executable : "pid " + window.ProcessId)} [{window.ClassName}]";
@@ -895,7 +917,7 @@ public partial class MainWindow : Window
     }
 
     /// <summary>Gama rampasına yalnız gama gider; aydınlık/kontrast/RGB renk matrisinde, iki kez uygulanmasın.</summary>
-    private ColorSettings GammaOnlySettings() => new() { Gamma = _settings.Gamma };
+    private ColorSettings GammaOnlySettings() => ColorSettings.GammaOnly(_settings.Gamma);
 
     /// <summary>
     /// Profil etkinken (oyun odakta veya önizleme) yarım saniyede bir ekrandaki değerleri denetler;
@@ -1267,6 +1289,7 @@ public partial class MainWindow : Window
     protected override void OnClosed(EventArgs e)
     {
         _watchTimer.Stop();
+        _restoreTimer.Stop();
         _previewTimer.Stop();
         _saveDebounceTimer.Stop();
         _liveApplyTimer.Stop();

@@ -31,14 +31,12 @@ internal static class GameProcessMonitor
         ["marvel-win64-shipping.exe"] = "Marvel Rivals",
     };
 
-    // Odağı kısa süreliğine alan ama oyunu örtmeyen kabuk pencereleri: Alt+Tab menüsü, görev çubuğu,
-    // Başlat/arama/bildirim merkezi, açılır menüler. Bunlar ön plana geçince profil geri alınmaz.
+    // Yalnız Alt+Tab menüsü / görev görünümü: geçiş sürerken son karar korunur. Masaüstü, görev çubuğu ve Başlat geçici
+    // sayılmaz; yoksa oyundan masaüstüne geçince renk açık kalıyordu.
     private static readonly HashSet<string> TransientShellClasses = new(StringComparer.Ordinal)
     {
         "XamlExplorerHostIslandWindow", "MultitaskingViewFrame", "TaskSwitcherWnd", "TaskSwitcherOverlayWnd",
-        "ForegroundStaging", "Shell_TrayWnd", "Shell_SecondaryTrayWnd", "Windows.UI.Core.CoreWindow",
-        "NotifyIconOverflowWindow", "TopLevelWindowForOverflowXamlIsland", "#32768", "Xaml_WindowedPopupClass",
-        "tooltips_class32", "Progman", "WorkerW"
+        "ForegroundStaging"
     };
 
     internal static IReadOnlyList<string> FindRunningGames(IEnumerable<string> executableNames)
@@ -95,7 +93,7 @@ internal static class GameProcessMonitor
 
     /// <summary>
     /// Odak oyunda değilken profilin hangi oyuna ait sayılacağı (null: profil kapalı olmalı).
-    /// Ön planda Alt+Tab menüsü, görev çubuğu, Başlat gibi geçici bir kabuk penceresi varsa (ya da ön plan
+    /// Ön planda Alt+Tab menüsü ya da görev görünümü gibi geçici bir kabuk penceresi varsa (ya da ön plan
     /// boşsa) arkada oyunun mu başka bir pencerenin mi durduğu bilinemez: son karar korunur. Profil açıksa ve
     /// gizlenme beklemiyorsa oyun küçültülmediği sürece açık kalır; kapalıysa geçici pencere yüzünden açılmaz.
     /// Eskiden geçici pencere "oyun görünür" sayılıyordu; oyun arkadayken iki uygulama arasında yapılan her

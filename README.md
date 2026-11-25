@@ -30,7 +30,7 @@ Built-in guides for the best **CS2 settings**, **VALORANT settings** and **NVIDI
 
 ### Pro Player Settings, Configs and Crosshair Codes
 
-Current settings of 201 pros from 37 top teams: 101 CS2 players from 19 teams and 100 VALORANT players from 18 teams (data: [prosettings.net](https://prosettings.net)). Pick by team, search, see photos and team logos. Sensitivity is converted to your mouse DPI. Load a pro's **CS2 config** in one click or copy their **VALORANT crosshair code**.
+Current settings of 201 pros from 40 top teams: 101 CS2 players from 20 teams and 100 VALORANT players from 20 teams (data: [prosettings.net](https://prosettings.net)). Pick by team, search, see photos and team logos. Sensitivity is converted to your mouse DPI. Load a pro's **CS2 config** in one click or copy their **VALORANT crosshair code**.
 
 ### Background App Cleaner
 
@@ -50,7 +50,7 @@ Read-only check with advice: single or dual-channel RAM, RAM speed and XMP, CPU 
 - Every setting's previous value is saved and restored exactly when you turn it off, even after a crash.
 - Windows services, `bcdedit`/HPET and VBS/Memory Integrity are **never changed**.
 - The game process is never read, written or injected into. Colors change only through the Windows gamma ramp and color matrix.
-- CS2 configs are written as a new `gcg_<player>.cfg` file; your own config files are never touched.
+- CS2 configs are written as new `gcg_<player>.cfg` files. So they load when CS2 starts, one marked line (`exec gcg_aktif`) is added once to the end of your `autoexec.cfg` (a copy is kept as `autoexec.cfg.gcg-yedek`); your other lines are never changed. Your own settings are backed up to `gcg_yedek.cfg` before the first pro config, and the **My CS2 settings** button brings them back.
 
 ## FAQ
 

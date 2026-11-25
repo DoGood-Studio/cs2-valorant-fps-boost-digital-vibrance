@@ -96,14 +96,14 @@ internal abstract class TweakBase : ITweak
         try
         {
             bool ok = RevertCore(out error);
-            IsActive = false;
+            // Geri alınamadıysa ayar hâlâ uygulanmış durumdadır; etkin sayılır ki yeniden denenebilsin.
+            IsActive = !ok;
             if (ok) AppLogger.Info($"{Title}: geri alındı");
             else AppLogger.Warn($"{Title}: geri alınamadı — {error}");
             return ok;
         }
         catch (Exception ex)
         {
-            IsActive = false;
             error = ex.Message;
             AppLogger.Write($"{Title}: geri alma hatası", ex);
             return false;
