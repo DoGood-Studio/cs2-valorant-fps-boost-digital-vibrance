@@ -110,7 +110,11 @@ internal sealed class PerformanceGuard : IDisposable
                 if (!(tweak.Read().IsApplied && !tweak.IsActive)) ok = Apply(tweak, out error);   // Windows zaten böyleyse dokunma
                 if (!ok) _catalog.SetEnabled(tweak, false);
             }
-            else ok = Revert(tweak, out error);
+            else
+            {
+                ok = Revert(tweak, out error);
+                if (!ok) _catalog.SetEnabled(tweak, true);   // geri alınamadı: açık görünmeye devam etsin
+            }
         }
         _save();
         Changed?.Invoke();
@@ -137,7 +141,9 @@ internal sealed class PerformanceGuard : IDisposable
         {
             if (!_catalog.IsEnabled(tweak) && !tweak.IsActive) continue;
             _catalog.SetEnabled(tweak, false);
-            if (tweak.IsActive && Revert(tweak, out _)) count++;
+            if (!tweak.IsActive) continue;
+            if (Revert(tweak, out _)) count++;
+            else _catalog.SetEnabled(tweak, true);
         }
         _save();
         AppLogger.Info($"FPS Boost: {count} ayar önceki değerine döndürüldü");
@@ -214,10 +220,17 @@ internal sealed class PerformanceGuard : IDisposable
         return ok;
     }
 
-    private bool Revert(ITweak tweak, out string? error)
+    /// <summary>Ayarı geri alır; saklanan önceki değer yalnız geri alma başarılıysa silinir.</summary>
+    internal static bool RevertAndForget(ColorSettings settings, ITweak tweak, out string? error)
     {
         bool ok = tweak.Revert(out error);
-        _settings.Performance.CapturedPrevious.Remove(tweak.Id);
+        if (ok) settings.Performance.CapturedPrevious.Remove(tweak.Id);
+        return ok;
+    }
+
+    private bool Revert(ITweak tweak, out string? error)
+    {
+        bool ok = RevertAndForget(_settings, tweak, out error);
         return ok;
     }
 

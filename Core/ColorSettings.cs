@@ -98,6 +98,15 @@ internal sealed class ColorSettings
         MouseDpi = Math.Clamp(MouseDpi, 100, 32000);
     }
 
+    /// <summary>
+    /// Yalnız gaması olan, geri kalanı nötr profil (gama rampası için). Nötr değerler açıkça verilir: sınıfın varsayılanları
+    /// önerilen profildir (55/55/85); onlarla kurulunca aydınlık ve kontrast hem rampada hem renk matrisinde, iki kez uygulanıyordu.
+    /// </summary>
+    internal static ColorSettings GammaOnly(int gamma) => new()
+    {
+        Brightness = 50, Contrast = 50, Gamma = gamma, DigitalVibrance = 50, Hue = 0, Red = 100, Green = 100, Blue = 100
+    };
+
     internal static string NormalizeExecutableName(string? value)
     {
         if (string.IsNullOrWhiteSpace(value)) return string.Empty;

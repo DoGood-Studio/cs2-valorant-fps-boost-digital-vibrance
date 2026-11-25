@@ -507,5 +507,15 @@
 "511": "Valor de {0}",
 "512": "Arrastra · flechas para ajuste fino · doble clic: neutral",
 "513": "Desactivado",
-"514": "{0} %"
+"514": "{0} %",
+"515": "Mis ajustes de CS2",
+"516": "Tus propios ajustes de antes de la config de pro se cargan la próxima vez que abras CS2 (exec gcg_yedek)",
+"517": "Los ajustes de {0} se cargarán automáticamente la próxima vez que abras CS2. Si el juego está abierto, pega en la consola para cargarlos ya: {1} (copiado al portapapeles). No se pudo hacer copia de tus ajustes",
+"518": "Los ajustes de {0} se cargarán automáticamente la próxima vez que abras CS2. Si el juego está abierto, pega en la consola para cargarlos ya: {1} (copiado al portapapeles)",
+"519": "No se encontraron los ajustes guardados de CS2. Abre y cierra CS2 una vez y vuelve a intentarlo.",
+"520": "Tus propios ajustes se cargarán la próxima vez que abras CS2. Si el juego está abierto, pega en la consola para volver ya: {0} (copiado al portapapeles)",
+"521": "Tus ajustes se guardaron; {0} ajustes están en el valor por defecto de CS2 y no están en la copia. Tus propios ajustes se cargarán la próxima vez que abras CS2. Si el juego está abierto, pega en la consola para volver ya: {1} (copiado al portapapeles)",
+"522": "La sensibilidad, la mira y el viewmodel se cargan automáticamente la próxima vez que abras CS2",
+"523": "No se pudo preparar la copia: {0}",
+"524": "Los datos de mira de este jugador son del sistema de miras antiguo de CS2; solo se cargan la sensibilidad y el viewmodel"
 }

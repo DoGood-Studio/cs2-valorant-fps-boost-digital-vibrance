@@ -507,5 +507,15 @@
 "511": "Wert für {0}",
 "512": "Ziehen · Pfeiltasten zur Feineinstellung · Doppelklick: neutral",
 "513": "Aus",
-"514": "{0} %"
+"514": "{0} %",
+"515": "Meine CS2-Einstellungen",
+"516": "Deine eigenen Einstellungen von vor der Pro-Config werden beim nächsten Start von CS2 geladen (exec gcg_yedek)",
+"517": "Die Einstellungen von {0} werden beim nächsten Start von CS2 automatisch geladen. Ist das Spiel offen, zum sofortigen Laden in die Konsole einfügen: {1} (in die Zwischenablage kopiert). Deine eigenen Einstellungen konnten nicht gesichert werden",
+"518": "Die Einstellungen von {0} werden beim nächsten Start von CS2 automatisch geladen. Ist das Spiel offen, zum sofortigen Laden in die Konsole einfügen: {1} (in die Zwischenablage kopiert)",
+"519": "Die gespeicherten CS2-Einstellungen wurden nicht gefunden. Öffne und schließe CS2 einmal und versuche es erneut.",
+"520": "Deine eigenen Einstellungen werden beim nächsten Start von CS2 geladen. Ist das Spiel offen, zum sofortigen Zurückwechseln in die Konsole einfügen: {0} (in die Zwischenablage kopiert)",
+"521": "Deine Einstellungen wurden gesichert; {0} Einstellungen stehen auf dem CS2-Standard und sind nicht in der Sicherung. Deine eigenen Einstellungen werden beim nächsten Start von CS2 geladen. Ist das Spiel offen, zum sofortigen Zurückwechseln in die Konsole einfügen: {1} (in die Zwischenablage kopiert)",
+"522": "Sensitivität, Fadenkreuz und Viewmodel werden beim nächsten Start von CS2 automatisch geladen",
+"523": "Sicherung konnte nicht erstellt werden: {0}",
+"524": "Die Fadenkreuzdaten dieses Spielers stammen aus dem alten Fadenkreuzsystem von CS2; nur Sensitivität und Viewmodel werden geladen"
 }

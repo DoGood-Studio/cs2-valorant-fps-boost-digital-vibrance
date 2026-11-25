@@ -69,7 +69,7 @@ internal static class BeforeAfter
         var red = new ushort[256];
         var green = new ushort[256];
         var blue = new ushort[256];
-        DisplayGamma.ComputeRamp(new ColorSettings { Gamma = profile.Gamma }, red, green, blue);
+        DisplayGamma.ComputeRamp(ColorSettings.GammaOnly(profile.Gamma), red, green, blue);
 
         int w = source.PixelWidth, h = source.PixelHeight;
         var pixels = new byte[w * h * 4];

@@ -66,20 +66,13 @@ internal sealed class ProMouse
 
 internal sealed class ProCrosshair
 {
+    /// <summary>VALORANT crosshair kodu.</summary>
     public string? Code { get; set; }
     public string? Style { get; set; }
-    public double? Length { get; set; }
-    public double? Thickness { get; set; }
-    public double? Gap { get; set; }
-    public bool? Outline { get; set; }
-    public double? OutlineThickness { get; set; }
-    public int? ColorR { get; set; }
-    public int? ColorG { get; set; }
-    public int? ColorB { get; set; }
-    public int? Alpha { get; set; }
-    public bool? Dot { get; set; }
-    public bool? TStyle { get; set; }
-    public bool? FollowRecoil { get; set; }
+    /// <summary>CS2: Eylül 2026 crosshair sisteminin konsol komutları (ad → değer), prosettings'in maç verisinden.</summary>
+    public Dictionary<string, string>? Cvars { get; set; }
+    /// <summary>CS2: veri güncellemeden önceki sisteme ait; CS2 bu komutları artık tanımıyor, crosshair yüklenmez.</summary>
+    public bool Legacy { get; set; }
 }
 
 internal sealed class ProVideo
@@ -152,34 +145,17 @@ internal static class ProConfig
         }
         if (player.Mouse.ZoomSensitivity is double zoom) Cvar(sb, "zoom_sensitivity_ratio", zoom);
 
-        if (player.Crosshair is { } c)
+        List<string> crosshair = Cs2CrosshairLines(player);
+        if (crosshair.Count > 0)
         {
             sb.AppendLine();
-            sb.AppendLine($"// Crosshair ({c.Style ?? "statik"})");
-            Cvar(sb, "cl_crosshairstyle", 4);   // klasik statik: profesyonellerin neredeyse tamamı
-            if (c.Length is double length) Cvar(sb, "cl_crosshairsize", length);
-            if (c.Thickness is double thickness) Cvar(sb, "cl_crosshairthickness", thickness);
-            if (c.Gap is double gap) Cvar(sb, "cl_crosshairgap", gap);
-            if (c.Outline is bool outline)
-            {
-                Cvar(sb, "cl_crosshair_drawoutline", outline ? 1 : 0);
-                if (outline && c.OutlineThickness is double ot) Cvar(sb, "cl_crosshair_outlinethickness", ot);
-            }
-            if (c.ColorR is int r && c.ColorG is int g && c.ColorB is int b)
-            {
-                Cvar(sb, "cl_crosshaircolor", 5);
-                Cvar(sb, "cl_crosshaircolor_r", r);
-                Cvar(sb, "cl_crosshaircolor_g", g);
-                Cvar(sb, "cl_crosshaircolor_b", b);
-            }
-            if (c.Alpha is int alpha)
-            {
-                Cvar(sb, "cl_crosshairusealpha", 1);
-                Cvar(sb, "cl_crosshairalpha", alpha);
-            }
-            if (c.Dot is bool dot) Cvar(sb, "cl_crosshairdot", dot ? 1 : 0);
-            if (c.TStyle is bool t) Cvar(sb, "cl_crosshair_t", t ? 1 : 0);
-            if (c.FollowRecoil is bool recoil) Cvar(sb, "cl_crosshair_recoil", recoil ? 1 : 0);
+            sb.AppendLine($"// Crosshair ({player.Crosshair?.Style ?? "?"})");
+            foreach (string line in crosshair) sb.AppendLine(line);
+        }
+        else if (player.Crosshair?.Legacy == true)
+        {
+            sb.AppendLine();
+            sb.AppendLine("// Crosshair yüklenmedi: bu oyuncunun verisi CS2'nin Eylül 2026 crosshair güncellemesinden önceki sisteme ait.");
         }
 
         if (player.Viewmodel is { } v && v.Fov is not null)
@@ -197,15 +173,37 @@ internal static class ProConfig
         return sb.ToString();
     }
 
-    /// <summary>Yalnız crosshair komutları (panoya kopyalamak için, tek satır).</summary>
-    public static string Cs2CrosshairCommands(ProPlayer player)
+    /// <summary>
+    /// CS2'nin Eylül 2026 crosshair sistemindeki komutlar (client.dll'deki adlarla doğrulandı); yazılma sırası da bu.
+    /// Eski adlar (cl_crosshairsize, cl_crosshairgap, cl_crosshaircolor, cl_crosshairusealpha …) artık "Unknown command".
+    /// </summary>
+    internal static readonly string[] Cs2CrosshairCvars =
     {
-        string config = BuildCs2Config(player, 800);
-        IEnumerable<string> lines = config.Split('\n')
-            .Select(l => l.Trim())
-            .Where(l => l.StartsWith("cl_crosshair", StringComparison.Ordinal));
-        return string.Join("; ", lines);
+        "cl_crosshairstyle", "cl_crosshair_length", "cl_crosshair_thickness", "cl_crosshair_gap",
+        "cl_crosshair_drawoutline", "cl_crosshairoutline_r", "cl_crosshairoutline_g", "cl_crosshairoutline_b", "cl_crosshairoutline_a",
+        "cl_crosshaircolor_r", "cl_crosshaircolor_g", "cl_crosshaircolor_b", "cl_crosshaircolor_a",
+        "cl_crosshairdot", "cl_crosshair_t", "cl_crosshair_recoil",
+        "cl_crosshair_dynamic_splitdist", "cl_crosshair_dynamic_splitalpha_innermod", "cl_crosshair_dynamic_splitalpha_outermod",
+        "cl_crosshair_dynamic_maxdist_splitratio", "cl_crosshair_dynamic_spread_limit", "cl_crosshair_sniper_width",
+        "cl_crosshair_screen_height", "cl_ironsight_usecrosshaircolor", "cl_ironsight_dot_scale"
+    };
+
+    /// <summary>Oyuncunun yeni sistem crosshair komutları; bilinmeyen ad ya da sayı olmayan değer yazılmaz.</summary>
+    internal static List<string> Cs2CrosshairLines(ProPlayer player)
+    {
+        var lines = new List<string>();
+        if (player.Crosshair?.Cvars is not { Count: > 0 } cvars || player.Crosshair.Legacy) return lines;
+        var byName = new Dictionary<string, string>(cvars, StringComparer.OrdinalIgnoreCase);
+        foreach (string name in Cs2CrosshairCvars)
+            if (byName.TryGetValue(name, out string? raw) && SafeCvarValue(raw) is string value)
+                lines.Add($"{name} \"{value}\"");
+        return lines;
     }
+
+    public static bool HasCs2Crosshair(ProPlayer player) => Cs2CrosshairLines(player).Count > 0;
+
+    /// <summary>Yalnız crosshair komutları (panoya kopyalamak için, tek satır).</summary>
+    public static string Cs2CrosshairCommands(ProPlayer player) => string.Join("; ", Cs2CrosshairLines(player));
 
     /// <summary>CS2 config dosyasını yazar; yolunu döndürür. CS2 bulunamazsa null.</summary>
     public static string? WriteCs2Config(ProPlayer player, int userDpi, string? knownCs2Path, out string? error)
@@ -221,6 +219,127 @@ internal static class ProConfig
         File.WriteAllText(path, BuildCs2Config(player, userDpi), new UTF8Encoding(false));
         AppLogger.Info($"Pro config yazıldı: {path}");
         return path;
+    }
+
+    // ------------------------------------------------------------------ Kullanıcının kendi ayar yedeği
+
+    public const string BackupConfigName = "gcg_yedek.cfg";
+    public static string BackupExecCommand => "exec " + Path.GetFileNameWithoutExtension(BackupConfigName);
+
+    /// <summary>Pro config'lerin değiştirebildiği CS2 ayarları; yedek bunların kullanıcıdaki değerini saklar.</summary>
+    internal static readonly string[] Cs2ConfigCvars =
+        new[] { "sensitivity", "zoom_sensitivity_ratio" }
+            .Concat(Cs2CrosshairCvars)
+            .Concat(new[] { "viewmodel_fov", "viewmodel_offset_x", "viewmodel_offset_y", "viewmodel_offset_z" })
+            .ToArray();
+
+    /// <summary>CS2'nin "cs2_user_convars_*.vcfg" dosyasındaki "ad" "değer" satırları.</summary>
+    internal static Dictionary<string, string> ParseVcfgConvars(string text)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (Match match in Regex.Matches(text, "^[ \\t]*\"([^\"\\r\\n]+)\"[ \\t]+\"([^\"\\r\\n]*)\"[ \\t]*\\r?$", RegexOptions.Multiline))
+            result[match.Groups[1].Value] = match.Groups[2].Value;
+        return result;
+    }
+
+    /// <summary>
+    /// Yedek config metni: pro config'lerin dokunduğu ayarların kullanıcıdaki değerleri. Yalnız sayı ve true/false
+    /// kabul edilir (exec edilen dosyaya komut sızmasın). CS2'nin dosyasında olmayan ayarlar (hiç değiştirilmemiş,
+    /// oyunun varsayılanında) <paramref name="missing"/> listesine girer; varsayılanları tahmin edilmez.
+    /// </summary>
+    internal static string BuildBackupConfig(IReadOnlyDictionary<string, string> userValues, string source, DateTime createdAt,
+        out List<string> missing)
+    {
+        missing = new List<string>();
+        var sb = new StringBuilder();
+        sb.AppendLine($"// Game Color Guard — kendi CS2 ayarlarınızın yedeği ({createdAt.ToString("yyyy-MM-dd HH:mm", Inv)})");
+        sb.AppendLine($"// Kaynak: {source}");
+        sb.AppendLine($"// Pro config yüklemeden önceki değerleriniz. Geri dönmek için CS2 konsoluna:  {BackupExecCommand}");
+        sb.AppendLine("// Bu dosyayı silerseniz bir sonraki pro yüklemede o anki ayarlarınızla yeniden oluşturulur.");
+        sb.AppendLine();
+        foreach (string name in Cs2ConfigCvars)
+        {
+            if (userValues.TryGetValue(name, out string? raw) && SafeCvarValue(raw) is string value)
+                sb.AppendLine($"{name} \"{value}\"");
+            else
+                missing.Add(name);
+        }
+        if (missing.Count > 0)
+        {
+            sb.AppendLine();
+            sb.AppendLine("// CS2 bu ayarları kendi dosyasına yazmamış (hiç değiştirilmemiş, oyunun varsayılanında):");
+            sb.AppendLine("//   " + string.Join(", ", missing));
+            sb.AppendLine("// Bir pro config bunları değiştirdiyse bu yedek eski değerlerine döndüremez; CS2 ayarlarından düzeltin.");
+        }
+        sb.AppendLine();
+        sb.AppendLine("echo \"Game Color Guard: kendi ayarlariniz geri yuklendi\"");
+        return sb.ToString();
+    }
+
+    private static string? SafeCvarValue(string raw)
+    {
+        string value = raw.Trim();
+        if (value.Equals("true", StringComparison.OrdinalIgnoreCase)) return "1";
+        if (value.Equals("false", StringComparison.OrdinalIgnoreCase)) return "0";
+        return Regex.IsMatch(value, "^-?[0-9]+(\\.[0-9]+)?$") ? value : null;
+    }
+
+    /// <summary>
+    /// Kullanıcının kendi ayar yedeği yoksa CS2'nin kayıtlı ayarlarından oluşturur; varsa dokunmaz (ilk pro yüklemeden
+    /// önceki hâl korunur). CS2'nin dosyası yalnız okunur. Yedeğin yolunu, CS2'nin kayıtlı ayarları bulunamazsa null döndürür.
+    /// </summary>
+    public static string? EnsureCs2Backup(string cfgDir, out bool created, out int missingCount)
+    {
+        created = false;
+        missingCount = 0;
+        string path = Path.Combine(cfgDir, BackupConfigName);
+        if (File.Exists(path)) return path;
+
+        string? convars = FindCs2UserConvars();
+        if (convars is null) return null;
+        string text;
+        using (var stream = new FileStream(convars, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+        using (var reader = new StreamReader(stream))
+            text = reader.ReadToEnd();
+
+        string config = BuildBackupConfig(ParseVcfgConvars(text), convars, DateTime.Now, out List<string> missing);
+        File.WriteAllText(path, config, new UTF8Encoding(false));
+        created = true;
+        missingCount = missing.Count;
+        AppLogger.Info($"Kendi CS2 ayarlarının yedeği yazıldı: {path} (kaynak {convars}; dosyada olmayan: {string.Join(", ", missing)})");
+        return path;
+    }
+
+    /// <summary>Etkin Steam hesabının CS2 kullanıcı ayarları; Steam kapalıysa en son değişen hesabınki.</summary>
+    public static string? FindCs2UserConvars()
+    {
+        string? steam = SteamPath();
+        if (steam is null) return null;
+        string userdata = Path.Combine(steam, "userdata");
+        if (!Directory.Exists(userdata)) return null;
+        string relative = Path.Combine("730", "local", "cfg", "cs2_user_convars_0_slot0.vcfg");
+
+        uint active = 0;
+        try
+        {
+            using RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam\ActiveProcess");
+            if (key?.GetValue("ActiveUser") is int id) active = unchecked((uint)id);
+        }
+        catch { }
+        if (active != 0)
+        {
+            string own = Path.Combine(userdata, active.ToString(Inv), relative);
+            if (File.Exists(own)) return own;
+        }
+        try
+        {
+            return Directory.EnumerateDirectories(userdata)
+                .Select(dir => Path.Combine(dir, relative))
+                .Where(File.Exists)
+                .OrderByDescending(File.GetLastWriteTimeUtc)
+                .FirstOrDefault();
+        }
+        catch { return null; }
     }
 
     /// <summary>...\game\csgo\cfg klasörü: önce öğrenilmiş cs2.exe yolundan, yoksa Steam kütüphanelerinden.</summary>
@@ -270,14 +389,24 @@ internal static class ProConfig
         return File.Exists(fallback) ? fallback : null;
     }
 
+    private static string? SteamPath()
+    {
+        try
+        {
+            using RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");
+            string? steam = (key?.GetValue("SteamPath") as string)?.Replace('/', '\\');
+            return string.IsNullOrEmpty(steam) ? null : steam;
+        }
+        catch { return null; }
+    }
+
     private static IEnumerable<string> SteamLibraries()
     {
         var result = new List<string>();
         try
         {
-            using RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");
-            string? steam = (key?.GetValue("SteamPath") as string)?.Replace('/', '\\');
-            if (string.IsNullOrEmpty(steam)) return result;
+            string? steam = SteamPath();
+            if (steam is null) return result;
             result.Add(steam);
             string vdf = Path.Combine(steam, "steamapps", "libraryfolders.vdf");
             if (File.Exists(vdf))

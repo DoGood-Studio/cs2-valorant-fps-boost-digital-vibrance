@@ -38,9 +38,15 @@ internal sealed class ProPage : UserControl
         string fetched = DateTime.TryParse(_data.FetchedAt, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime f)
             ? f.ToString("d MMMM yyyy", Tr) : _data.FetchedAt;
         Button source = Ui.Button("prosettings.net", "", "SmallSecondaryButton", (_, _) => Ui.Open("https://prosettings.net/"));
+        Button own = Ui.Button("Kendi CS2 ayarlarım", "", "SmallSecondaryButton", (_, _) => RestoreOwnCs2(),
+            "CS2'yi bir sonraki açışınızda pro config'ten önceki kendi ayarlarınız yüklenir (exec gcg_yedek)");
+        own.Margin = new Thickness(0, 0, 8, 0);
+        var headerActions = new StackPanel { Orientation = Orientation.Horizontal };
+        headerActions.Children.Add(own);
+        headerActions.Children.Add(source);
         page.Children.Add(Ui.PageHeader("Pro ayarlar",
             $"Top takımların {_data.Players.Count} oyuncusunun güncel fare, crosshair ve görüntü ayarları. Veri: prosettings.net, {fetched}. Hassasiyet sizin fare DPI'nıza çevrilir.",
-            source));
+            headerActions));
 
         // Üst çubuk: oyun, arama, DPI
         var toolbar = new Grid();
@@ -256,7 +262,7 @@ internal sealed class ProPage : UserControl
         if (player.IsCs2)
         {
             Button apply = Ui.Button("CS2'ye yükle", "", "SmallPrimaryButton", (_, _) => ApplyCs2(player),
-                "Hassasiyet, crosshair ve viewmodel ayarlarını CS2 config klasörüne yeni bir dosya olarak yazar");
+                "Hassasiyet, crosshair ve viewmodel ayarları CS2'yi bir sonraki açışınızda otomatik yüklenir");
             apply.Margin = new Thickness(0, 0, 8, 0);
             actions.Children.Add(apply);
             Button cross = Ui.Button("Crosshair", "", "SmallSecondaryButton", (_, _) =>
@@ -264,7 +270,12 @@ internal sealed class ProPage : UserControl
                 if (Ui.TryCopy(ProConfig.Cs2CrosshairCommands(player)))
                     _ctx.Notify($"{player.Name} crosshair komutları kopyalandı — CS2 konsoluna yapıştırın", false);
             }, "Crosshair konsol komutlarını panoya kopyalar");
-            cross.IsEnabled = player.Crosshair?.Length is not null;
+            cross.IsEnabled = ProConfig.HasCs2Crosshair(player);
+            if (!cross.IsEnabled && player.Crosshair?.Legacy == true)
+            {
+                cross.ToolTip = "Bu oyuncunun crosshair verisi CS2'nin eski crosshair sistemine ait; yalnız hassasiyet ve viewmodel yüklenir";
+                ToolTipService.SetShowOnDisabled(cross, true);
+            }
             cross.Margin = new Thickness(0, 0, 8, 0);
             actions.Children.Add(cross);
         }
@@ -315,14 +326,56 @@ internal sealed class ProPage : UserControl
                 _ctx.Notify(error ?? "CS2 bulunamadı", true);
                 return;
             }
+            string cfgDir = System.IO.Path.GetDirectoryName(path)!;
+            // İlk pro yüklemeden önce kullanıcının kendi ayarları yedeklenir (varsa dokunulmaz).
+            string? backup = null;
+            try { backup = ProConfig.EnsureCs2Backup(cfgDir, out _, out _); }
+            catch (Exception ex) { AppLogger.Write("Kendi CS2 ayarları yedeklenemedi", ex); }
+
+            // CS2 bir sonraki açılışta kendiliğinden yükler; oyun açıksa komut panoda, konsola yapıştırınca hemen geçer.
+            Cs2AutoLoad.Schedule(cfgDir, System.IO.Path.GetFileName(path), player.Name);
             string command = "exec " + System.IO.Path.GetFileNameWithoutExtension(path);
             Ui.TryCopy(command);
-            _ctx.Notify($"{player.Name} config'i yazıldı. CS2 konsoluna yapıştırın: {command} (panoya kopyalandı)", false);
+            string loaded = $"{player.Name} ayarları CS2'yi bir sonraki açışınızda otomatik yüklenecek. Oyun açıksa hemen yüklemek için konsola yapıştırın: {command} (panoya kopyalandı)";
+            _ctx.Notify(backup is null ? loaded + ". Kendi ayarlarınız yedeklenemedi" : loaded, backup is null);
         }
         catch (Exception ex)
         {
             AppLogger.Write("Pro config yazılamadı", ex);
             _ctx.Notify("Config yazılamadı: " + ex.Message, true);
+        }
+    }
+
+    /// <summary>"Kendi CS2 ayarlarım": yedek yoksa şimdi oluşturur, CS2'nin bir sonraki açılışında yüklenmesini ayarlar.</summary>
+    private void RestoreOwnCs2()
+    {
+        if (_ctx.TestMode) return;
+        try
+        {
+            _ctx.Settings.GamePaths.TryGetValue("cs2.exe", out string? cs2);
+            string? cfgDir = ProConfig.FindCs2CfgFolder(cs2);
+            if (cfgDir is null)
+            {
+                _ctx.Notify("CS2 kurulumu bulunamadı. Oyunu bir kez açın (yol otomatik öğrenilir) ve tekrar deneyin.", true);
+                return;
+            }
+            if (ProConfig.EnsureCs2Backup(cfgDir, out bool created, out int missing) is null)
+            {
+                _ctx.Notify("CS2'nin kayıtlı ayarları bulunamadı. CS2'yi bir kez açıp kapatın ve tekrar deneyin.", true);
+                return;
+            }
+            Cs2AutoLoad.Schedule(cfgDir, ProConfig.BackupConfigName, "kendi ayarlarınız");
+            string command = ProConfig.BackupExecCommand;
+            Ui.TryCopy(command);
+            string back = $"CS2'yi bir sonraki açışınızda kendi ayarlarınız yüklenecek. Oyun açıksa hemen dönmek için konsola yapıştırın: {command} (panoya kopyalandı)";
+            _ctx.Notify(created && missing > 0
+                ? $"Kendi ayarlarınız yedeklendi; {missing} ayar CS2 varsayılanında olduğu için yedekte yok. " + back
+                : back, false);
+        }
+        catch (Exception ex)
+        {
+            AppLogger.Write("Kendi CS2 ayar yedeği hazırlanamadı", ex);
+            _ctx.Notify("Yedek hazırlanamadı: " + ex.Message, true);
         }
     }
 

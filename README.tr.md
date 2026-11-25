@@ -30,7 +30,7 @@ FPS ve görünürlük için **CS2 en iyi ayarlar**, **Valorant en iyi ayarlar** 
 
 ### Pro Oyuncu Ayarları, Config ve Crosshair Kodları
 
-37 top takımdan 201 profesyonelin güncel ayarları: 19 takımdan 101 CS2 ve 18 takımdan 100 Valorant oyuncusu (kaynak: [prosettings.net](https://prosettings.net)). Takıma göre seçim, arama, oyuncu fotoğrafları ve takım logoları var. Hassasiyet sizin fare DPI'nıza çevrilir. Bir profesyonelin **CS2 config**'ini tek tıkla yükleyin ya da **Valorant crosshair kodunu** kopyalayın.
+40 top takımdan 201 profesyonelin güncel ayarları: 20 takımdan 101 CS2 ve 20 takımdan 100 Valorant oyuncusu (kaynak: [prosettings.net](https://prosettings.net)). Takıma göre seçim, arama, oyuncu fotoğrafları ve takım logoları var. Hassasiyet sizin fare DPI'nıza çevrilir. Bir profesyonelin **CS2 config**'ini tek tıkla yükleyin ya da **Valorant crosshair kodunu** kopyalayın.
 
 ### Arka Plan Temizliği
 
@@ -50,7 +50,7 @@ Salt okunur kontrol ve öneriler: RAM tek/çift kanal, RAM hızı ve XMP, işlem
 - Uygulanan her ayarın önceki değeri saklanır. Ayar kapatılınca (çökme sonrası dahil) o değere birebir dönülür.
 - Windows hizmetleri, `bcdedit`/HPET ve VBS/Bellek bütünlüğü **değiştirilmez**.
 - Oyunun belleğine dokunulmaz, oyuna enjekte olunmaz (VAC / Vanguard / FACEIT). Renkler yalnızca Windows'un gama rampası ve renk matrisiyle değiştirilir.
-- CS2 config'i yalnızca yeni bir `gcg_<oyuncu>.cfg` dosyası olarak yazılır; mevcut config dosyalarınıza dokunulmaz.
+- CS2 config'leri yeni `gcg_<oyuncu>.cfg` dosyaları olarak yazılır. CS2 açılırken yüklensin diye `autoexec.cfg` dosyanızın sonuna bir kez işaretli tek bir satır (`exec gcg_aktif`) eklenir (kopyası `autoexec.cfg.gcg-yedek` olarak saklanır); diğer satırlarınıza dokunulmaz. İlk pro config'ten önce kendi ayarlarınız `gcg_yedek.cfg` dosyasına yedeklenir, **Kendi CS2 ayarlarım** düğmesi onları geri getirir.
 
 ## Sık Sorulan Sorular
 
